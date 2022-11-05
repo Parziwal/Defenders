@@ -129,6 +129,11 @@
   <ItemGroup>
     <ClCompile Include="CaffWebApp.Parser.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="1.caff" />
+    <None Include="2.caff" />
+    <None Include="3.caff" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
