@@ -1,5 +1,5 @@
 CXX = g++
-CXXFLAGS = -Wall
+CXXFLAGS = -Wall -Wextra -Wmissing-declarations
 LDFLAGS =
 OBJFILES = CaffWebApp.Parser.o
 TARGET = CaffParser
