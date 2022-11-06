@@ -1,7 +1,7 @@
 #pragma once
 #include <cstdio>
 
-void emptyCaffBuffer(unsigned char*, size_t);
+void emptyCaffBuffer(unsigned char*, int);
 int parseCaffFile(FILE* fp);
 int writeBmpFile(FILE*, int, int);
 int writeBmpFileHeader(FILE*, int, int);

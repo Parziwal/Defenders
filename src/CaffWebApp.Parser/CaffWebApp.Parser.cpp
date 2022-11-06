@@ -20,7 +20,7 @@ int main(int argc, char* argv[]) {
     return return_code;
 }
 
-void emptyCaffBuffer(unsigned char* buffer, size_t length) {
+void emptyCaffBuffer(unsigned char* buffer, int length) {
     for (int i = 0; i < length; ++i)
         buffer[i] = 0;
 }
@@ -28,7 +28,7 @@ void emptyCaffBuffer(unsigned char* buffer, size_t length) {
 int parseCaffFile(FILE* fp) {
     auto* caffBuffer = new unsigned char[L_BUFFER];
     emptyCaffBuffer(caffBuffer, L_BUFFER);
-    size_t read = fread(caffBuffer, 1, 9, fp);
+    int read = fread(caffBuffer, 1, 9, fp);
     if (read != 9) {
         printf("Tul rovid a fajl");
         return 1;
@@ -181,7 +181,7 @@ int parseCaffFile(FILE* fp) {
 
     emptyCaffBuffer(caffBuffer, L_BUFFER);
     read = fread(caffBuffer, 1, (size_t)(ciff_header_size)-36, fp);
-    if (read != (size_t)ciff_header_size - 36) {
+    if (read != ciff_header_size - 36) {
         printf("Tul rovid a fajl");
         return 1;
     }
@@ -265,7 +265,7 @@ int writeBmpFilePixels(FILE* fp, int width, int height, FILE* out) {
     fseek(fp, content_size - window_size, SEEK_CUR);
     for (int i = 0; i < height; ++i) {
         emptyCaffBuffer(bmp_pixel_buffer, window_size);
-        size_t read = fread(bmp_pixel_buffer, 1, window_size, fp);
+        int read = fread(bmp_pixel_buffer, 1, window_size, fp);
         if (read != window_size) {
             printf("Tul rovid a fajl");
             return 1;
