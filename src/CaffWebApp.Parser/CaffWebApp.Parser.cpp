@@ -1,18 +1,17 @@
-#include <cstdio>
-#include <cstring>
+#include <iostream>
 #include "CaffWebApp.Parser.hpp"
 
 const size_t L_BUFFER = 256;
 
 int main(int argc, char* argv[]) {
     if (argc != 2) {
-        printf("Az argumentumok szama nem megfelelo");
+        std::cout << "Az argumentumok szama nem megfelelo" << std::endl;
         return 1;
     }
     FILE* fp;
     errno_t err = fopen_s(&fp, argv[1], "rb"); // b: Binaris modban olvas
     if (err != 0) {
-        printf("A fajl nem nyithato meg");
+        std::cout << "A fajl nem nyithato meg" << std::endl;
         return 1;
     }
     int return_code = parseCaffFile(fp);
@@ -30,12 +29,12 @@ int parseCaffFile(FILE* fp) {
     emptyCaffBuffer(caffBuffer, L_BUFFER);
     int read = fread(caffBuffer, 1, 9, fp);
     if (read != 9) {
-        printf("Tul rovid a fajl");
+        std::cout << "Tul rovid a fajl" << std::endl;
         return 1;
     }
 
     if (*caffBuffer != 1) {
-        printf("A fajl nem headerrel kezdodik.");
+        std::cout << "A fajl nem headerrel kezdodik." << std::endl;
         return 1;
     }
 
@@ -55,7 +54,7 @@ int parseCaffFile(FILE* fp) {
 
 
     if (block_size != 20) {
-        printf("Az elso blokk mindig 20 bajtos.");
+        std::cout << "Az elso blokk mindig 20 bajtos." << std::endl;
         return 1;
     }
 
@@ -65,37 +64,37 @@ int parseCaffFile(FILE* fp) {
     /// 12-19 byte: num_anim
     read = fread(caffBuffer, 1, 20, fp);
     if (read != 20) {
-        printf("Tul rovid a fajl");
+        std::cout << "Tul rovid a fajl" << std::endl;
         return 1;
     }
     /// magic 4 byte
     if (caffBuffer[0] != 'C' || caffBuffer[1] != 'A' || caffBuffer[2] != 'F' || caffBuffer[3] != 'F') {
-        printf("CAFF header 'magic' nem megfelelo.");
+        std::cout << "CAFF header 'magic' nem megfelelo." << std::endl;
         return 1;
     }
     /// header_size
     int header_size = (*endianConverter)(caffBuffer + 4, 8);
     if (header_size != 20) {
-        printf("Az header blokk mindig 20 bajtos.");
+        std::cout << "Az header blokk mindig 20 bajtos." << std::endl;
         return 1;
     }
     /// num_anim (for annual GIF conversion in the future)
-    // int num_anim = (*endianConverter)(caffBuffer + 12, 8);
+    int num_anim = (*endianConverter)(caffBuffer + 12, 8);
 
     /// NEW BLOCK!!!
     emptyCaffBuffer(caffBuffer, L_BUFFER);
     read = fread(caffBuffer, 1, 9, fp);
     if (read != 9) {
-        printf("Tul rovid a fajl");
+        std::cout << "Tul rovid a fajl" << std::endl;
         return 1;
     }
     if (caffBuffer[0] != 2) {
-        printf("CAFF credits blokk kovetkezne");
+        std::cout << "CAFF credits blokk kovetkezne" << std::endl;
         return 1;
     }
     block_size = (*endianConverter)(caffBuffer + 1, 8);
     if (block_size < 14) {
-        printf("Tul kicsi a CAFF Credits blokk 'length' erteke");
+        std::cout << "Tul kicsi a CAFF Credits blokk 'length' erteke" << std::endl;
         return 1;
     }
     /// CAFF Credits:
@@ -109,7 +108,7 @@ int parseCaffFile(FILE* fp) {
     emptyCaffBuffer(caffBuffer, L_BUFFER);
     read = fread(caffBuffer, 1, block_size, fp);
     if (read != block_size) {
-        printf("Tul rovid a fajl");
+        std::cout << "Tul rovid a fajl" << std::endl;
         return 1;
     }
 
@@ -118,76 +117,76 @@ int parseCaffFile(FILE* fp) {
     // For future:
     // int year = caffBuffer[0] | caffBuffer[1] << 8;
 
-    //for (int i = 0; i < num_anim; ++i) {
-    /// NEW BLOCK
-    emptyCaffBuffer(caffBuffer, L_BUFFER);
-    read = fread(caffBuffer, 1, 9, fp);
-    if (read != 9) {
-        printf("Tul rovid a fajl");
-        return 1;
+    for (int i = 0; i < num_anim; ++i) {
+        /// NEW BLOCK
+        emptyCaffBuffer(caffBuffer, L_BUFFER);
+        read = fread(caffBuffer, 1, 9, fp);
+        if (read != 9) {
+            std::cout << "Tul rovid a fajl" << std::endl;
+            return 1;
+        }
+
+        if (caffBuffer[0] != 3) {
+            std::cout << "CAFF animation blokk kovetkezne" << std::endl;
+            return 1;
+        }
+
+        int anim_block_size = (*endianConverter)(caffBuffer + 1, 8);
+
+        /// CAFF Animation block
+        emptyCaffBuffer(caffBuffer, L_BUFFER);
+        read = fread(caffBuffer, 1, 8, fp);
+        if (read != 8) {
+            std::cout << "Tul rovid a fajl" << std::endl;
+            return 1;
+        }
+        // if needed for the future
+        //int duration = (*endianConverter)(caffBuffer, 8);
+
+        emptyCaffBuffer(caffBuffer, L_BUFFER);
+        read = fread(caffBuffer, 1, 36, fp);
+        if (read != 36) {
+            std::cout << "Tul rovid a fajl" << std::endl;
+            return 1;
+        }
+
+        if (caffBuffer[0] != 'C' || caffBuffer[1] != 'I' || caffBuffer[2] != 'F' || caffBuffer[3] != 'F') {
+            std::cout << "CIFF header 'magic' nem megfelelo." << std::endl;
+            return 1;
+        }
+
+        int ciff_header_size = (*endianConverter)(caffBuffer + 4, 8);
+        int ciff_content_size = (*endianConverter)(caffBuffer + 12, 8);
+        if (anim_block_size != 8 + ciff_header_size + ciff_content_size) {
+            std::cout << "Nem megfelelo CIFF fajl meret es CAFF animation block meret" << std::endl;
+            return 1;
+        }
+        int ciff_width = (*endianConverter)(caffBuffer + 20, 8);
+        int ciff_height = (*endianConverter)(caffBuffer + 28, 8);
+
+        // nehany matematikai ellenorzes a headeren
+        if (ciff_content_size % 3 != 0) {
+            std::cout << "CIFF content_size nem oszthato 3-mal" << std::endl;
+            return 1;
+        }
+
+        int rem = ciff_content_size % (ciff_width * ciff_height);
+        int quotient = ciff_content_size / (ciff_width * ciff_height);
+
+        if (rem != 0 || quotient != 3) {
+            std::cout << "Rossz kep meret informacio a CIFF headerben" << std::endl;
+            return 1;
+        }
+
+        emptyCaffBuffer(caffBuffer, L_BUFFER);
+        read = fread(caffBuffer, 1, (size_t)(ciff_header_size)-36, fp);
+        if (read != ciff_header_size - 36) {
+            std::cout << "Tul rovid a fajl" << std::endl;
+            return 1;
+        }
+
+        writeBmpFile(fp, ciff_width, ciff_height);
     }
-
-    if (caffBuffer[0] != 3) {
-        printf("CAFF animation blokk kovetkezne");
-        return 1;
-    }
-
-    int anim_block_size = (*endianConverter)(caffBuffer + 1, 8);
-
-    /// CAFF Animation block
-    emptyCaffBuffer(caffBuffer, L_BUFFER);
-    read = fread(caffBuffer, 1, 8, fp);
-    if (read != 8) {
-        printf("Tul rovid a fajl");
-        return 1;
-    }
-    // if needed for the future
-    //int duration = (*endianConverter)(caffBuffer, 8);
-
-    emptyCaffBuffer(caffBuffer, L_BUFFER);
-    read = fread(caffBuffer, 1, 36, fp);
-    if (read != 36) {
-        printf("Tul rovid a fajl");
-        return 1;
-    }
-
-    if (caffBuffer[0] != 'C' || caffBuffer[1] != 'I' || caffBuffer[2] != 'F' || caffBuffer[3] != 'F') {
-        printf("CIFF header 'magic' nem megfelelo.");
-        return 1;
-    }
-
-    int ciff_header_size = (*endianConverter)(caffBuffer + 4, 8);
-    int ciff_content_size = (*endianConverter)(caffBuffer + 12, 8);
-    if (anim_block_size != 8 + ciff_header_size + ciff_content_size) {
-        printf("Nem megfelelo CIFF fajl meret es CAFF animation block meret");
-        return 1;
-    }
-    int ciff_width = (*endianConverter)(caffBuffer + 20, 8);
-    int ciff_height = (*endianConverter)(caffBuffer + 28, 8);
-
-    // nehany matematikai ellenorzes a headeren
-    if (ciff_content_size % 3 != 0) {
-        printf("CIFF content_size nem oszthato 3-mal");
-        return 1;
-    }
-
-    int rem = ciff_content_size % (ciff_width * ciff_height);
-    int quotient = ciff_content_size / (ciff_width * ciff_height);
-
-    if (rem != 0 || quotient != 3) {
-        printf("Rossz kep meret informacio a CIFF headerben");
-        return 1;
-    }
-
-    emptyCaffBuffer(caffBuffer, L_BUFFER);
-    read = fread(caffBuffer, 1, (size_t)(ciff_header_size)-36, fp);
-    if (read != ciff_header_size - 36) {
-        printf("Tul rovid a fajl");
-        return 1;
-    }
-
-    writeBmpFile(fp, ciff_width, ciff_height);
-    //}
     delete[] caffBuffer;
     return 0;
 }
@@ -197,7 +196,7 @@ int writeBmpFile(FILE* fp, int width, int height) {
     FILE* out;
     errno_t err = fopen_s(&out, "out.bmp", "wb");
     if (err != 0) {
-        printf("Nem sikerult megnyitni a fajlt.");
+        std::cout << "Nem sikerult megnyitni a kimeneti fajlt." << std::endl;
         return 1;
     }
 
@@ -267,7 +266,7 @@ int writeBmpFilePixels(FILE* fp, int width, int height, FILE* out) {
         emptyCaffBuffer(bmp_pixel_buffer, window_size);
         int read = fread(bmp_pixel_buffer, 1, window_size, fp);
         if (read != window_size) {
-            printf("Tul rovid a fajl");
+            std::cout << "Tul rovid a fajl" << std::endl;
             return 1;
         }
         for (int j = 0; j < window_size; j += 3) {

@@ -1,5 +1,5 @@
 #pragma once
-#include <cstdio>
+#include <iostream>
 
 void emptyCaffBuffer(unsigned char*, int);
 int parseCaffFile(FILE* fp);
