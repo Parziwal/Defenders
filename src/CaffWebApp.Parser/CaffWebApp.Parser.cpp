@@ -1,5 +1,5 @@
-#include <iostream>
 #include "CaffWebApp.Parser.hpp"
+#include <iostream>
 
 const size_t L_BUFFER = 256;
 
@@ -25,7 +25,8 @@ void emptyCaffBuffer(unsigned char* buffer, int length) {
 }
 
 int parseCaffFile(FILE* fp) {
-    auto* caffBuffer = new unsigned char[L_BUFFER];
+    auto caffBuffer = new unsigned char[L_BUFFER];
+    
     emptyCaffBuffer(caffBuffer, L_BUFFER);
     int read = fread(caffBuffer, 1, 9, fp);
     if (read != 9) {
@@ -92,8 +93,8 @@ int parseCaffFile(FILE* fp) {
         std::cout << "CAFF credits blokk kovetkezne" << std::endl;
         return 1;
     }
-    block_size = (*endianConverter)(caffBuffer + 1, 8);
-    if (block_size < 14) {
+    int credits_header_size = (*endianConverter)(caffBuffer + 1, 8);
+    if (credits_header_size < 14) {
         std::cout << "Tul kicsi a CAFF Credits blokk 'length' erteke" << std::endl;
         return 1;
     }
@@ -106,8 +107,8 @@ int parseCaffFile(FILE* fp) {
     /// 6-13 idx byte: creator_length
     /// 14-(14+creator_length-1): creator
     emptyCaffBuffer(caffBuffer, L_BUFFER);
-    read = fread(caffBuffer, 1, block_size, fp);
-    if (read != block_size) {
+    read = fread(caffBuffer, 1, credits_header_size, fp);
+    if (read != credits_header_size) {
         std::cout << "Tul rovid a fajl" << std::endl;
         return 1;
     }
@@ -116,10 +117,12 @@ int parseCaffFile(FILE* fp) {
     // int creator_length = (*endianConverter)(caffBuffer + 6, 8);
     // For future:
     // int year = caffBuffer[0] | caffBuffer[1] << 8;
-
+    int jump_to = 9 + 20 + 9 + credits_header_size;
     for (int i = 0; i < num_anim; ++i) {
         /// NEW BLOCK
         emptyCaffBuffer(caffBuffer, L_BUFFER);
+        if (i != 0)
+            fseek(fp, jump_to, SEEK_SET);
         read = fread(caffBuffer, 1, 9, fp);
         if (read != 9) {
             std::cout << "Tul rovid a fajl" << std::endl;
@@ -132,6 +135,7 @@ int parseCaffFile(FILE* fp) {
         }
 
         int anim_block_size = (*endianConverter)(caffBuffer + 1, 8);
+        jump_to += 9 + anim_block_size;
 
         /// CAFF Animation block
         emptyCaffBuffer(caffBuffer, L_BUFFER);
@@ -184,8 +188,8 @@ int parseCaffFile(FILE* fp) {
             std::cout << "Tul rovid a fajl" << std::endl;
             return 1;
         }
-
-        writeBmpFile(fp, ciff_width, ciff_height);
+        if (i == 0) // csak az elso kepet mentjuk ki, viszont a többit headert is megvizsgaljuk
+            writeBmpFile(fp, ciff_width, ciff_height);
     }
     delete[] caffBuffer;
     return 0;
@@ -261,7 +265,9 @@ int writeBmpFilePixels(FILE* fp, int width, int height, FILE* out) {
     int content_size = width * height * 3;
     int window_size = width * 3;
     auto* bmp_pixel_buffer = new unsigned char[window_size];
-    fseek(fp, content_size - window_size, SEEK_CUR);
+    int seek_ret = fseek(fp, content_size - window_size, SEEK_CUR);
+    if (seek_ret != 0)
+        std::cout << "fseek not worked" << std::endl;
     for (int i = 0; i < height; ++i) {
         emptyCaffBuffer(bmp_pixel_buffer, window_size);
         int read = fread(bmp_pixel_buffer, 1, window_size, fp);
@@ -275,7 +281,11 @@ int writeBmpFilePixels(FILE* fp, int width, int height, FILE* out) {
             bmp_pixel_buffer[j + 2] = temp;
         }
         fwrite(bmp_pixel_buffer, sizeof(char), window_size, out);
-        fseek(fp, -2 * window_size, SEEK_CUR);
+        if (i + 1 != height) {
+            seek_ret = fseek(fp, -2 * window_size, SEEK_CUR);
+            if (seek_ret != 0)
+                std::cout << "fseek not worked" << std::endl;
+        }
     }
 
     delete[] bmp_pixel_buffer;
