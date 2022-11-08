@@ -40,16 +40,11 @@ int parseCaffFile(std::ifstream& caff) {
     int block_size_little_endian = littleEndianToInt((const unsigned char*)(&caffBuffer[1]), 8);
     int block_size_big_endian = bigEndianToInt((const unsigned char*)(&caffBuffer[1]), 8);
 
-    int block_size;
     int (*endianConverter)(const unsigned char*, int);
-    if (block_size_little_endian == 20) {
+    if (block_size_little_endian == 20)
         endianConverter = &littleEndianToInt;
-        block_size = block_size_little_endian;
-    }
-    else if (block_size_big_endian == 20) {
+    else if (block_size_big_endian == 20) 
         endianConverter = &bigEndianToInt;
-        block_size = block_size_big_endian;
-    }
     else {
         std::cout << "Rossz header" << std::endl;
         return 1;
