@@ -10,13 +10,14 @@ int main(int argc, char* argv[]) {
         std::cout << "Az argumentumok szama nem megfelelo" << std::endl;
         return 1;
     }
-    std::ifstream caff(argv[1], std::ifstream::in | std::ifstream::binary);
+    std::string filename = argv[1];
+    std::ifstream caff(filename, std::ifstream::in | std::ifstream::binary);
     if (!caff.is_open()) {
         std::cout << "Nem sikerult megnyitni a bemeneti fajlt" << std::endl;
         return 1;
     }
         
-    int return_code = parseCaffFile(caff);
+    int return_code = parseCaffFile(caff, filename);
     caff.close();
     return return_code;
 }
@@ -26,7 +27,7 @@ void emptyCaffBuffer(char* buffer, int length) {
         buffer[i] = 0;
 }
 
-int parseCaffFile(std::ifstream& caff) {
+int parseCaffFile(std::ifstream& caff, std::string& filename) {
     auto caffBuffer = new char[L_BUFFER];
 
     emptyCaffBuffer(caffBuffer, L_BUFFER);
@@ -185,15 +186,21 @@ int parseCaffFile(std::ifstream& caff) {
             std::cout << "Tul rovid a fajl" << std::endl;
             return 1;
         }
-        if (writeBmpFile(caff, ciff_width, ciff_height, i + 1) != 0)
+        if (writeBmpFile(caff, ciff_width, ciff_height, filename, i + 1) != 0)
             return 1;
     }
     return 0;
 }
 
-int writeBmpFile(std::ifstream& caff, int width, int height, int count) {
+int writeBmpFile(std::ifstream& caff, int width, int height, std::string& f_name, int count) {
     /// CREATE and WRITE bmp file
-    std::string filename = "out_" + std::to_string(count) + ".bmp";
+    size_t lastindex = f_name.find_last_of(".");
+    std::string name_without_ext;
+    if (lastindex == std::string::npos)
+        name_without_ext = f_name;
+    else
+        name_without_ext = f_name.substr(0, lastindex);
+    std::string filename = name_without_ext + "_" + std::to_string(count) + ".bmp";
     std::ofstream out(filename.c_str(), std::ofstream::out | std::ios_base::binary);
 
     if (!out.is_open()) {
@@ -206,7 +213,7 @@ int writeBmpFile(std::ifstream& caff, int width, int height, int count) {
     out.close();
     if (success != 0)
         for (int i = 0; i < count; i++)
-            std::remove(("out_" + std::to_string(count + 1) + ".bmp").c_str());
+            std::remove((f_name + "_" + std::to_string(i + 1) + ".bmp").c_str());
     return success;
 }
 
