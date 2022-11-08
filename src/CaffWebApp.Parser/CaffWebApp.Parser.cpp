@@ -1,6 +1,7 @@
 #include "CaffWebApp.Parser.hpp"
 #include <iostream>
 #include <fstream>
+#include <string>
 
 const size_t L_BUFFER = 256;
 
@@ -184,16 +185,16 @@ int parseCaffFile(std::ifstream& caff) {
             std::cout << "Tul rovid a fajl" << std::endl;
             return 1;
         }
-        if (i == 0)
-            if (writeBmpFile(caff, ciff_width, ciff_height) != 0)
-                return 1;
+        if (writeBmpFile(caff, ciff_width, ciff_height, i + 1) != 0)
+            return 1;
     }
     return 0;
 }
 
-int writeBmpFile(std::ifstream& caff, int width, int height) {
+int writeBmpFile(std::ifstream& caff, int width, int height, int count) {
     /// CREATE and WRITE bmp file
-    std::ofstream out("out.bmp", std::ofstream::out | std::ios_base::binary);
+    std::string filename = "out_" + std::to_string(count) + ".bmp";
+    std::ofstream out(filename.c_str(), std::ofstream::out | std::ios_base::binary);
 
     if (!out.is_open()) {
         std::cout << "Nem sikerult megnyitni a kimeneti fajlt" << std::endl;
@@ -204,7 +205,8 @@ int writeBmpFile(std::ifstream& caff, int width, int height) {
     int success = writeBmpFilePixels(caff, width, height, out);
     out.close();
     if (success != 0)
-        std::remove("out.bmp");
+        for (int i = 0; i < count; i++)
+            std::remove(("out_" + std::to_string(count + 1) + ".bmp").c_str());
     return success;
 }
 

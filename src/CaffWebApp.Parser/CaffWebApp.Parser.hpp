@@ -3,7 +3,7 @@
 
 void emptyCaffBuffer(char*, int);
 int parseCaffFile(std::ifstream&);
-int writeBmpFile(std::ifstream&, int, int);
+int writeBmpFile(std::ifstream&, int, int, int);
 int writeBmpFileHeader(std::ofstream&, int, int);
 int writeBmpFileInfoHeader(std::ofstream&, int, int);
 int writeBmpFilePixels(std::ifstream&, int, int, std::ofstream&);
