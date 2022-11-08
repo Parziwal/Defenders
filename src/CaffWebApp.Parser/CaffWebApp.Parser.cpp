@@ -10,6 +10,11 @@ int main(int argc, char* argv[]) {
         return 1;
     }
     std::ifstream caff(argv[1], std::ifstream::in | std::ifstream::binary);
+    if (!caff.is_open()) {
+        std::cout << "Nem sikerult megnyitni a bemeneti fajlt" << std::endl;
+        return 1;
+    }
+        
     int return_code = parseCaffFile(caff);
     caff.close();
     return return_code;
@@ -190,6 +195,10 @@ int writeBmpFile(std::ifstream& caff, int width, int height) {
     /// CREATE and WRITE bmp file
     std::ofstream out("out.bmp", std::ofstream::out | std::ios_base::binary);
 
+    if (!out.is_open()) {
+        std::cout << "Nem sikerult megnyitni a kimeneti fajlt" << std::endl;
+        return 1;
+    }
     writeBmpFileHeader(out, width, height);
     writeBmpFileInfoHeader(out, width, height);
     int success = writeBmpFilePixels(caff, width, height, out);
