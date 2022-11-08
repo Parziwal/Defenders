@@ -185,7 +185,8 @@ int parseCaffFile(std::ifstream& caff) {
             return 1;
         }
         if (i == 0)
-            writeBmpFile(caff, ciff_width, ciff_height);
+            if (writeBmpFile(caff, ciff_width, ciff_height) != 0)
+                return 1;
     }
     return 0;
 }
@@ -196,9 +197,11 @@ int writeBmpFile(std::ifstream& caff, int width, int height) {
 
     writeBmpFileHeader(out, width, height);
     writeBmpFileInfoHeader(out, width, height);
-    writeBmpFilePixels(caff, width, height, out);
+    int success = writeBmpFilePixels(caff, width, height, out);
     out.close();
-    return 0;
+    if (success != 0)
+        std::remove("out.bmp");
+    return success;
 }
 
 int writeBmpFileHeader(std::ofstream& out, int width, int height) {
