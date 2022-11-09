@@ -1,5 +1,6 @@
 #include "CaffWebApp.Parser.hpp"
 #include <iostream>
+#include <iomanip>
 #include <fstream>
 #include <string>
 
@@ -19,6 +20,8 @@ int main(int argc, char* argv[]) {
         
     int return_code = parseCaffFile(caff, filename);
     caff.close();
+    if (return_code == 0)
+        std::cout << std::endl << "A generalt a kepek a beadott CAFF fajl mappajaban talalhatok BMP formatumban." << std::endl;
     return return_code;
 }
 
@@ -111,11 +114,30 @@ int parseCaffFile(std::ifstream& caff, std::string& filename) {
         return 1;
     }
 
-    // A datumot nem hasznaljuk fel
-    // int creator_length = (*endianConverter)(caffBuffer + 6, 8);
-    // For future:
-    // int year = caffBuffer[0] | caffBuffer[1] << 8;
+    int creator_length = (*endianConverter)((const unsigned char*)(&caffBuffer[6]), 8);
+    int year = (*endianConverter)((const unsigned char*)(&caffBuffer[0]), 2);
+    int month = caffBuffer[2] | 0x00;
+    int day = caffBuffer[3] | 0x00;
+    int hour = caffBuffer[4] | 0x00;
+    int minute = caffBuffer[5] | 0x00;
+    auto creator = new char[creator_length + 1];
+    for (int i = 0; i < creator_length; i++)
+        creator[i] = caffBuffer[14 + i];
+    creator[creator_length] = '\0';
+    
+
     int jump_to = 9 + 20 + 9 + credits_header_size;
+    std::cout << "Meta adatok" << std::endl;
+    std::cout << "CAFF keszitesi ideje: " 
+        << year << '.' 
+        << std::setfill('0') << std::setw(2) << month << '.' 
+        << std::setfill('0') << std::setw(2) << day << ". " 
+        << std::setfill('0') << std::setw(2) << hour << ':' 
+        << std::setfill('0') << std::setw(2) << minute << std::endl;
+    std::cout << "Kepek keszitoje: " << creator << std::endl;
+    std::cout << "CIFF kepek szama a fajlban: " << num_anim << std::endl;
+    delete[] creator;
+
     for (int i = 0; i < num_anim; ++i) {
         /// NEW BLOCK
         emptyCaffBuffer(caffBuffer, L_BUFFER);
@@ -142,8 +164,7 @@ int parseCaffFile(std::ifstream& caff, std::string& filename) {
             std::cout << "Tul rovid a fajl" << std::endl;
             return 1;
         }
-        // if needed for the future
-        //int duration = (*endianConverter)(caffBuffer, 8);
+        int duration = (*endianConverter)((const unsigned char*)(&caffBuffer[0]), 8);
 
         emptyCaffBuffer(caffBuffer, L_BUFFER);
         caff.read(caffBuffer, 36);
@@ -181,14 +202,50 @@ int parseCaffFile(std::ifstream& caff, std::string& filename) {
         }
 
         emptyCaffBuffer(caffBuffer, L_BUFFER);
-        caff.read(caffBuffer, ciff_header_size - 36);
-        if (caff.gcount() != ciff_header_size - 36) {
+        int capt_size = ciff_header_size - 36;
+        caff.read(caffBuffer, capt_size);
+        if (caff.gcount() != capt_size) {
             std::cout << "Tul rovid a fajl" << std::endl;
             return 1;
         }
+
+        std::string caption(caffBuffer, capt_size);
+        if (caption[capt_size - 1] != '\0') {
+            std::cout << "A tagek nem jo karakterre vegzodnek" << std::endl;
+            return 1;
+        }
+        
+        size_t pos = caption.find('\n');
+        if (pos == std::string::npos) {
+            std::cout << "Nem talalhato a caption-t lezaro karakter" << std::endl;
+            return 1;
+        }
+
+        std::cout << std::endl << (i + 1) << ". CIFF metaadatai" << std::endl;
+        std::cout << "Kep merete: " << ciff_width << "x" << ciff_height << " px" << std::endl;
+        std::cout << "Animacio hossza: " << duration << " ms" << std::endl;
+                
+        std::cout << "Kep felirata: " << caption.substr(0, pos) << std::endl;
+        caption.erase(0, pos + 1);
+        pos = caption.find('\0');
+        if (pos == std::string::npos) {
+            std::cout << "Nem talalhato a taget lezaro karakter" << std::endl;
+            return 1;
+        }
+        std::cout << "Tagek: ";
+        while (pos != std::string::npos) {
+            std::cout << caption.substr(0, pos);
+            caption.erase(0, pos + 1);
+            pos = caption.find('\0');
+            if (pos != std::string::npos)
+                std::cout << ", ";
+        }
+        std::cout << std::endl;
+
         if (writeBmpFile(caff, ciff_width, ciff_height, filename, i + 1) != 0)
             return 1;
     }
+    delete[] caffBuffer;
     return 0;
 }
 
