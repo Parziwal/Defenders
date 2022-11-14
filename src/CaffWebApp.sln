@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.3.32901.215
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CaffWebApp.Api", "CaffWebApp.Api\CaffWebApp.Api.csproj", "{FE8F6318-8148-4FFC-A4A2-B3F6EB2F25F9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CaffWebApp.Api", "CaffWebApp.Api\CaffWebApp.Api.csproj", "{FE8F6318-8148-4FFC-A4A2-B3F6EB2F25F9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CaffWebApp.BLL", "CaffWebApp.BLL\CaffWebApp.BLL.csproj", "{9A75286B-6D99-4E41-89CC-7CC74082520C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CaffWebApp.BLL", "CaffWebApp.BLL\CaffWebApp.BLL.csproj", "{9A75286B-6D99-4E41-89CC-7CC74082520C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CaffWebApp.DAL", "CaffWebApp.DAL\CaffWebApp.DAL.csproj", "{A660F7B4-4573-429D-AE1C-726E7F4EA85B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CaffWebApp.DAL", "CaffWebApp.DAL\CaffWebApp.DAL.csproj", "{A660F7B4-4573-429D-AE1C-726E7F4EA85B}"
 EndProject
 Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "CaffWebApp.Web", "CaffWebApp.Web\CaffWebApp.Web.esproj", "{F399F8E9-FFE9-4465-94A4-DF7896C54F75}"
 EndProject
