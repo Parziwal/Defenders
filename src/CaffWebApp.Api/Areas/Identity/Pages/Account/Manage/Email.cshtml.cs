@@ -109,9 +109,9 @@ namespace CaffWebApp.Api.Areas.Identity.Pages.Account.Manage
             var email = await _userManager.GetEmailAsync(user);
             if (Input.NewEmail != email)
             {
+                await _userManager.SetUserNameAsync(user, Input.NewEmail);
                 var code = await _userManager.GenerateChangeEmailTokenAsync(user, Input.NewEmail);
-                _userManager.ChangeEmailAsync(user, Input.NewEmail, code);
-
+                await _userManager.ChangeEmailAsync(user, Input.NewEmail, code);
                 return RedirectToPage();
             }
 

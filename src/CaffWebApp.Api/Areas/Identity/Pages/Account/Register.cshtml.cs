@@ -66,6 +66,11 @@ namespace CaffWebApp.Api.Areas.Identity.Pages.Account
         /// </summary>
         public class InputModel
         {
+            [Required(ErrorMessage = "Fullname is required")]
+            [StringLength(50, ErrorMessage = "The {0} cannot be longer than {1} characters.")]
+            [Display(Name = "Fullname")]
+            public string Fullname { get; set; }
+
             /// <summary>
             ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
             ///     directly from your code. This API may change or be removed in future releases.
@@ -108,9 +113,8 @@ namespace CaffWebApp.Api.Areas.Identity.Pages.Account
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (ModelState.IsValid)
             {
-                var user = CreateUser();
-
-                await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
+                var user = new ApplicationUser { UserName = Input.Email, Email = Input.Email, Fullname = Input.Fullname };
+                
                 var result = await _userManager.CreateAsync(user, Input.Password);
 
                 if (result.Succeeded)
