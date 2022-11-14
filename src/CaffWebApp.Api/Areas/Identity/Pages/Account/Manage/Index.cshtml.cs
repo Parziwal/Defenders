@@ -30,12 +30,6 @@ namespace CaffWebApp.Api.Areas.Identity.Pages.Account.Manage
         ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
         ///     directly from your code. This API may change or be removed in future releases.
         /// </summary>
-        public string Username { get; set; }
-
-        /// <summary>
-        ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-        ///     directly from your code. This API may change or be removed in future releases.
-        /// </summary>
         [TempData]
         public string StatusMessage { get; set; }
 
@@ -52,6 +46,11 @@ namespace CaffWebApp.Api.Areas.Identity.Pages.Account.Manage
         /// </summary>
         public class InputModel
         {
+            [Required(ErrorMessage = "Fullname is required")]
+            [StringLength(50, ErrorMessage = "The {0} cannot be longer than {1} characters.")]
+            [Display(Name = "Fullname")]
+            public string Fullname { get; set; }
+
             /// <summary>
             ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
             ///     directly from your code. This API may change or be removed in future releases.
@@ -63,14 +62,12 @@ namespace CaffWebApp.Api.Areas.Identity.Pages.Account.Manage
 
         private async Task LoadAsync(ApplicationUser user)
         {
-            var userName = await _userManager.GetUserNameAsync(user);
             var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
-
-            Username = userName;
 
             Input = new InputModel
             {
-                PhoneNumber = phoneNumber
+                PhoneNumber = phoneNumber,
+                Fullname = user.Fullname
             };
         }
 
@@ -107,6 +104,17 @@ namespace CaffWebApp.Api.Areas.Identity.Pages.Account.Manage
                 if (!setPhoneResult.Succeeded)
                 {
                     StatusMessage = "Unexpected error when trying to set phone number.";
+                    return RedirectToPage();
+                }
+            }
+
+            if (Input.Fullname != user.Fullname)
+            {
+                user.Fullname = Input.Fullname;
+                var setFullname = await _userManager.UpdateAsync(user);
+                if (!setFullname.Succeeded)
+                {
+                    StatusMessage = "Unexpected error when trying to set fullname.";
                     return RedirectToPage();
                 }
             }
