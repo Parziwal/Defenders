@@ -23,8 +23,8 @@ public static class SwaggerExtensions
                 {
                     AuthorizationCode = new OpenApiOAuthFlow
                     {
-                        AuthorizationUrl = $"{caffApiOptions.BaseUrl}/connect/authorize",
-                        TokenUrl = $"{caffApiOptions.BaseUrl}/connect/token",
+                        AuthorizationUrl = $"{caffApiOptions.Authority}/connect/authorize",
+                        TokenUrl = $"{caffApiOptions.Authority}/connect/token",
                         Scopes = new Dictionary<string, string> { {caffApiOptions.ApiScope , caffApiOptions.ApiScopeDisplayName } },
                     },
                 },
