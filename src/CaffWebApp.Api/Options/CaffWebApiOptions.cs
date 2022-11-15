@@ -2,10 +2,10 @@
 
 public class CaffWebApiOptions
 {
-    required public string BaseUrl { get; set; }
-    required public string Audience { get; set; }
-    required public string Authority { get; set; }
-    required public string ApiScope { get; set; }
-    required public string ApiScopeDisplayName { get; set; }
-    required public string SwaggerClientId { get; set; }
+    public string BaseUrl { get; set; } = default!;
+    public string Audience { get; set; } = default!;
+    public string Authority { get; set; } = default!;
+    public string ApiScope { get; set; } = default!;
+    public string ApiScopeDisplayName { get; set; } = default!;
+    public string SwaggerClientId { get; set; } = default!;
 }
