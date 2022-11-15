@@ -3,8 +3,13 @@ on:
   push:
     branches:
       - main
+    paths:
+      - 'src/**'
+      - '!src/CaffWebApp.Web/**'
+      - '!src/CaffWebApp.Parser/**'
   pull_request:
     types: [opened, synchronize, reopened]
+
 jobs:
   build:
     name: Build and analyze
@@ -43,5 +48,5 @@ jobs:
         shell: powershell
         run: |
           .\.sonar\scanner\dotnet-sonarscanner begin /k:"Parziwal_Defenders" /o:"parziwal" /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io"
-          <insert_your_build_command>
+          dotnet build src/CaffWebApp.Api/CaffWebApp.Api.sln  
           .\.sonar\scanner\dotnet-sonarscanner end /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
