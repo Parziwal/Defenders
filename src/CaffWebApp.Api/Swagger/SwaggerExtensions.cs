@@ -1,4 +1,6 @@
-﻿using NSwag;
+﻿using CaffWebApp.Api.Options;
+using Microsoft.AspNetCore.Authentication.OAuth;
+using NSwag;
 using NSwag.AspNetCore;
 using NSwag.Generation.Processors.Security;
 
@@ -8,11 +10,12 @@ public static class SwaggerExtensions
 {
     public static IServiceCollection AddCaffWebAppSwagger(this IServiceCollection services, IConfiguration configuration)
     {
+        var caffApiOptions = configuration.GetSection(nameof(CaffWebApiOptions)).Get<CaffWebApiOptions>()!;
         services.AddOpenApiDocument(config =>
         {
             config.Title = "CaffWepApp Api";
             config.Version = "v1";
-
+            
             config.AddSecurity("OAuth2", new OpenApiSecurityScheme
             {
                 Type = OpenApiSecuritySchemeType.OAuth2,
@@ -20,9 +23,9 @@ public static class SwaggerExtensions
                 {
                     AuthorizationCode = new OpenApiOAuthFlow
                     {
-                        AuthorizationUrl = $"https://localhost:5001/connect/authorize",
-                        TokenUrl = $"https://localhost:5001/connect/token",
-                        Scopes = new Dictionary<string, string> { { "caffwebapp.api", "CaffWebApp Api Swagger access" } },
+                        AuthorizationUrl = $"{caffApiOptions.BaseUrl}/connect/authorize",
+                        TokenUrl = $"{caffApiOptions.BaseUrl}/connect/token",
+                        Scopes = new Dictionary<string, string> { {caffApiOptions.ApiScope , caffApiOptions.ApiScopeDisplayName } },
                     },
                 },
             });
@@ -33,17 +36,18 @@ public static class SwaggerExtensions
         return services;
     }
 
-    public static IApplicationBuilder UseCaffWebAppSwagger(this IApplicationBuilder app)
+    public static WebApplication UseCaffWebAppSwagger(this WebApplication app)
     {
+        var caffApiOptions = app.Configuration.GetSection(nameof(CaffWebApiOptions)).Get<CaffWebApiOptions>()!;
         app.UseOpenApi();
         app.UseSwaggerUi3(settings =>
         {
             settings.OAuth2Client = new OAuth2ClientSettings
             {
-                ClientId = "caff.swagger.client",
+                ClientId = caffApiOptions.SwaggerClientId,
                 UsePkceWithAuthorizationCodeGrant = true,
             };
-            settings.OAuth2Client.Scopes.Add("caffwebapp.api");
+            settings.OAuth2Client.Scopes.Add(caffApiOptions.ApiScope);
         });
 
         return app;

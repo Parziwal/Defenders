@@ -401,3 +401,5 @@ FodyWeavers.xsd
 CaffParser.exe
 CaffWebApp.Parser.o
 CaffWebApp.Parser/*.bmp
+
+is-signing-key*.json
