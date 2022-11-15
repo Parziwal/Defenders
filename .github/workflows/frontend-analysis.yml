@@ -6,6 +6,8 @@ on:
     paths:
       - 'src/CaffWebApp.Web/**'
   pull_request:
+    paths:
+      - 'src/CaffWebApp.Web/**'
     types: [opened, synchronize, reopened]
   workflow_dispatch:
   
