@@ -1,9 +1,11 @@
 ﻿using CaffWebApp.Api.Identity;
+using CaffWebApp.Api.Options;
 using CaffWebApp.Api.Swagger;
 using CaffWebApp.DAL;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
+using System.Configuration;
 
 namespace CaffWebApp.Api;
 
@@ -14,15 +16,17 @@ internal static class HostingExtensions
         builder.Services.AddRazorPages();
 
         builder.Services.AddDbContext<CaffDbContext>(options =>
-            options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")!, b => b.MigrationsAssembly("CaffWebApp.Api")));
+            options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")!));
 
         builder.Services.AddCaffWebAppIdentity();
         builder.Services.AddCaffWebAppIdentityServer();
 
+        var caffApiOptions = builder.Configuration.GetSection(nameof(CaffWebApiOptions)).Get<CaffWebApiOptions>()!;
         builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(options =>
             {
-
+                options.Audience = caffApiOptions.Audience;
+                options.Authority = caffApiOptions.Authority;
             });
         builder.Services.AddAuthorization(options =>
         {
