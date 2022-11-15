@@ -1,4 +1,4 @@
-name: SonarCloud Backend Build
+name: Backend API analysis
 on:
   push:
     branches:
