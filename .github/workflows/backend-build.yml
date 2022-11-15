@@ -1,4 +1,4 @@
-name: SonarCloud
+name: SonarCloud Backend Build
 on:
   push:
     branches:
@@ -49,5 +49,5 @@ jobs:
         shell: powershell
         run: |
           .\.sonar\scanner\dotnet-sonarscanner begin /k:"Parziwal_Defenders" /o:"parziwal" /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io"
-          dotnet build src/CaffWebApp.Api/CaffWebApp.Api.sln  
+          dotnet build .\src\CaffWebApp.Api\CaffWebApp.Api.csproj
           .\.sonar\scanner\dotnet-sonarscanner end /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
