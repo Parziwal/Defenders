@@ -21,6 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\CaffWebApp.BLL\CaffWebApp.BLL.csproj" />
     <ProjectReference Include="..\CaffWebApp.DAL\CaffWebApp.DAL.csproj" />
   </ItemGroup>
 
