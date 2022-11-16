@@ -7,7 +7,8 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "prestart": "node aspnetcore-https"
+    "prestart": "node aspnetcore-https",
+    "swagger": "nswag run angular-client.nswag /runtime:Net60"
   },
   "private": true,
   "dependencies": {
@@ -19,10 +20,10 @@
     "@angular/platform-browser": "^14.2.0",
     "@angular/platform-browser-dynamic": "^14.2.0",
     "@angular/router": "^14.2.0",
+    "jest-editor-support": "*",
     "rxjs": "~7.5.0",
     "tslib": "^2.3.0",
-    "zone.js": "~0.11.4",
-    "jest-editor-support": "*"
+    "zone.js": "~0.11.4"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^14.2.3",
@@ -35,6 +36,7 @@
     "karma-coverage": "~2.2.0",
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.0.0",
+    "nswag": "^13.17.0",
     "typescript": "~4.7.2"
   }
 }
