@@ -183,7 +183,7 @@ export class CaffClient {
         return _observableOf(null as any);
     }
 
-    downloadCaff(caffId: number): Observable<FileResponse> {
+    downloadCaffFile(caffId: number): Observable<FileResponse> {
         let url_ = this.baseUrl + "/api/Caff/{caffId}/download";
         if (caffId === undefined || caffId === null)
             throw new Error("The parameter 'caffId' must be defined.");
@@ -199,11 +199,11 @@ export class CaffClient {
         };
 
         return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processDownloadCaff(response_);
+            return this.processDownloadCaffFile(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processDownloadCaff(response_ as any);
+                    return this.processDownloadCaffFile(response_ as any);
                 } catch (e) {
                     return _observableThrow(e) as any as Observable<FileResponse>;
                 }
@@ -212,7 +212,7 @@ export class CaffClient {
         }));
     }
 
-    protected processDownloadCaff(response: HttpResponseBase): Observable<FileResponse> {
+    protected processDownloadCaffFile(response: HttpResponseBase): Observable<FileResponse> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -238,7 +238,7 @@ export class CaffClient {
         return _observableOf(null as any);
     }
 
-    uploadCaffFile(caffFile?: FileParameter | null | undefined): Observable<void> {
+    uploadCaffFile(caffFile?: FileParameter | null | undefined): Observable<CaffDetailsDto> {
         let url_ = this.baseUrl + "/api/Caff/upload";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -251,6 +251,7 @@ export class CaffClient {
             observe: "response",
             responseType: "blob",
             headers: new HttpHeaders({
+                "Accept": "application/json"
             })
         };
 
@@ -261,14 +262,14 @@ export class CaffClient {
                 try {
                     return this.processUploadCaffFile(response_ as any);
                 } catch (e) {
-                    return _observableThrow(e) as any as Observable<void>;
+                    return _observableThrow(e) as any as Observable<CaffDetailsDto>;
                 }
             } else
-                return _observableThrow(response_) as any as Observable<void>;
+                return _observableThrow(response_) as any as Observable<CaffDetailsDto>;
         }));
     }
 
-    protected processUploadCaffFile(response: HttpResponseBase): Observable<void> {
+    protected processUploadCaffFile(response: HttpResponseBase): Observable<CaffDetailsDto> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -277,7 +278,10 @@ export class CaffClient {
         let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
         if (status === 200) {
             return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
-            return _observableOf(null as any);
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = CaffDetailsDto.fromJS(resultData200);
+            return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
             return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
@@ -301,8 +305,8 @@ export class CommentClient {
         this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
     }
 
-    addCommentToCaff(caffId: number, commentDto: AddOrEditCommentDto): Observable<void> {
-        let url_ = this.baseUrl + "/api/Comment/{caffId}";
+    addCommentToCaff(caffId: number, commentDto: AddOrEditCommentDto): Observable<CommentDto> {
+        let url_ = this.baseUrl + "/api/Comment/caff/{caffId}";
         if (caffId === undefined || caffId === null)
             throw new Error("The parameter 'caffId' must be defined.");
         url_ = url_.replace("{caffId}", encodeURIComponent("" + caffId));
@@ -316,6 +320,7 @@ export class CommentClient {
             responseType: "blob",
             headers: new HttpHeaders({
                 "Content-Type": "application/json",
+                "Accept": "application/json"
             })
         };
 
@@ -326,14 +331,14 @@ export class CommentClient {
                 try {
                     return this.processAddCommentToCaff(response_ as any);
                 } catch (e) {
-                    return _observableThrow(e) as any as Observable<void>;
+                    return _observableThrow(e) as any as Observable<CommentDto>;
                 }
             } else
-                return _observableThrow(response_) as any as Observable<void>;
+                return _observableThrow(response_) as any as Observable<CommentDto>;
         }));
     }
 
-    protected processAddCommentToCaff(response: HttpResponseBase): Observable<void> {
+    protected processAddCommentToCaff(response: HttpResponseBase): Observable<CommentDto> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -342,7 +347,10 @@ export class CommentClient {
         let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
         if (status === 200) {
             return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
-            return _observableOf(null as any);
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = CommentDto.fromJS(resultData200);
+            return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
             return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
@@ -352,7 +360,7 @@ export class CommentClient {
         return _observableOf(null as any);
     }
 
-    editComment(commentId: number, commentDto: AddOrEditCommentDto): Observable<void> {
+    editComment(commentId: number, commentDto: AddOrEditCommentDto): Observable<CommentDto> {
         let url_ = this.baseUrl + "/api/Comment/{commentId}";
         if (commentId === undefined || commentId === null)
             throw new Error("The parameter 'commentId' must be defined.");
@@ -367,6 +375,7 @@ export class CommentClient {
             responseType: "blob",
             headers: new HttpHeaders({
                 "Content-Type": "application/json",
+                "Accept": "application/json"
             })
         };
 
@@ -377,14 +386,14 @@ export class CommentClient {
                 try {
                     return this.processEditComment(response_ as any);
                 } catch (e) {
-                    return _observableThrow(e) as any as Observable<void>;
+                    return _observableThrow(e) as any as Observable<CommentDto>;
                 }
             } else
-                return _observableThrow(response_) as any as Observable<void>;
+                return _observableThrow(response_) as any as Observable<CommentDto>;
         }));
     }
 
-    protected processEditComment(response: HttpResponseBase): Observable<void> {
+    protected processEditComment(response: HttpResponseBase): Observable<CommentDto> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -393,7 +402,10 @@ export class CommentClient {
         let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
         if (status === 200) {
             return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
-            return _observableOf(null as any);
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = CommentDto.fromJS(resultData200);
+            return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
             return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
@@ -464,7 +476,7 @@ export class UserClient {
         this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
     }
 
-    listAllUsers(): Observable<void> {
+    listAllUsers(): Observable<UserDto[]> {
         let url_ = this.baseUrl + "/api/User";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -472,6 +484,7 @@ export class UserClient {
             observe: "response",
             responseType: "blob",
             headers: new HttpHeaders({
+                "Accept": "application/json"
             })
         };
 
@@ -482,14 +495,14 @@ export class UserClient {
                 try {
                     return this.processListAllUsers(response_ as any);
                 } catch (e) {
-                    return _observableThrow(e) as any as Observable<void>;
+                    return _observableThrow(e) as any as Observable<UserDto[]>;
                 }
             } else
-                return _observableThrow(response_) as any as Observable<void>;
+                return _observableThrow(response_) as any as Observable<UserDto[]>;
         }));
     }
 
-    protected processListAllUsers(response: HttpResponseBase): Observable<void> {
+    protected processListAllUsers(response: HttpResponseBase): Observable<UserDto[]> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -498,7 +511,17 @@ export class UserClient {
         let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
         if (status === 200) {
             return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
-            return _observableOf(null as any);
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(UserDto.fromJS(item));
+            }
+            else {
+                result200 = <any>null;
+            }
+            return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
             return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
