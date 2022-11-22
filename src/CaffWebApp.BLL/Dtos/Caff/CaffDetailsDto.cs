@@ -1,4 +1,7 @@
-﻿namespace CaffWebApp.BLL.Dtos;
+﻿using CaffWebApp.BLL.Dtos.Comment;
+using CaffWebApp.BLL.Dtos.User;
+
+namespace CaffWebApp.BLL.Dtos.Caff;
 
 public class CaffDetailsDto
 {

@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using CaffWebApp.BLL.Dtos.User;
+using CaffWebApp.BLL.Services.User;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CaffWebApp.Api.Controllers
@@ -7,16 +9,19 @@ namespace CaffWebApp.Api.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
-        [HttpGet]
-        public Task ListAllUsers()
+        private readonly IUserService _userService;
+
+        public UserController(IUserService userService)
         {
-            return default!;
+            _userService = userService;
         }
 
+        [HttpGet]
+        public Task<List<UserDto>> ListAllUsers() =>
+            _userService.ListAllUsers();
+
         [HttpPut("{userId}")]
-        public Task DeleteUser(int userId)
-        {
-            return default!;
-        }
+        public Task DeleteUser(int userId) =>
+            _userService.DeleteUser(userId);
     }
 }

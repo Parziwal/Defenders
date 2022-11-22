@@ -1,4 +1,4 @@
-﻿namespace CaffWebApp.BLL.Dtos;
+﻿namespace CaffWebApp.BLL.Dtos.Comment;
 
 public class CommentDto
 {

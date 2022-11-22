@@ -1,4 +1,5 @@
-﻿using CaffWebApp.BLL.Dtos;
+﻿using CaffWebApp.BLL.Dtos.Comment;
+using CaffWebApp.BLL.Services.Comment;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CaffWebApp.Api.Controllers
@@ -7,22 +8,23 @@ namespace CaffWebApp.Api.Controllers
     [ApiController]
     public class CommentController : ControllerBase
     {
-        [HttpPost("{caffId}")]
-        public Task AddCommentToCaff(int caffId, [FromBody] AddOrEditCommentDto commentDto)
+        private readonly ICommentService _commentService;
+
+        public CommentController(ICommentService commentService)
         {
-            return default!;
+            _commentService = commentService;
         }
+
+        [HttpPost("caff/{caffId}")]
+        public Task<CommentDto> AddCommentToCaff(int caffId, [FromBody] AddOrEditCommentDto commentDto) =>
+            _commentService.AddCommentToCaff(caffId, commentDto);
 
         [HttpPut("{commentId}")]
-        public Task EditComment(int commentId, [FromBody] AddOrEditCommentDto commentDto)
-        {
-            return default!;
-        }
+        public Task<CommentDto> EditComment(int commentId, [FromBody] AddOrEditCommentDto commentDto) =>
+            _commentService.EditComment(commentId, commentDto);
 
         [HttpDelete("{commentId}")]
-        public Task DeleteComment(int commentId)
-        {
-            return default!;
-        }
+        public Task DeleteComment(int commentId) =>
+            _commentService.DeleteComment(commentId);
     }
 }

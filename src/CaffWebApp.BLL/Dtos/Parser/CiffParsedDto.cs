@@ -1,6 +1,6 @@
-﻿namespace CaffWebApp.BLL.Dtos;
+﻿namespace CaffWebApp.BLL.Dtos.Parser;
 
-public class CiffDto
+public class CiffParsedDto
 {
     public string Caption { get; set; } = default!;
     public int Width { get; set; }

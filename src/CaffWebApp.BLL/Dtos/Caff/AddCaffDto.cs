@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 
-namespace CaffWebApp.BLL.Dtos;
+namespace CaffWebApp.BLL.Dtos.Caff;
 
 public class AddCaffDto
 {
