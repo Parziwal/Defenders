@@ -1,4 +1,6 @@
-﻿public class FileResultDto
+﻿namespace CaffWebApp.BLL.Dtos.Caff;
+
+public class FileResultDto
 {
     public FileResultDto(byte[] content, string fileNameWithExtension, string mimeType)
     {
