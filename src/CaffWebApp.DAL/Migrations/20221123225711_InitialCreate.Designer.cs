@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CaffWebApp.DAL.Migrations
 {
     [DbContext(typeof(CaffDbContext))]
-    [Migration("20221114202653_InitialCreate")]
+    [Migration("20221123225711_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -41,6 +41,13 @@ namespace CaffWebApp.DAL.Migrations
                         .HasColumnType("nvarchar(256)");
 
                     b.Property<bool>("EmailConfirmed")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Fullname")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
                     b.Property<bool>("LockoutEnabled")
@@ -87,6 +94,134 @@ namespace CaffWebApp.DAL.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "475c5e32-049c-4d7b-a963-02ebdc15a94b",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "70ceb6e6-9a79-4fb8-b325-93453e2021b1",
+                            Email = "admin@email.hu",
+                            EmailConfirmed = true,
+                            Fullname = "Admin",
+                            IsDeleted = false,
+                            LockoutEnabled = false,
+                            NormalizedEmail = "ADMIN@EMAIL.HU",
+                            NormalizedUserName = "ADMIN@EMAIL.HU",
+                            PasswordHash = "AQAAAAEAACcQAAAAEAYhQeew7rP4OrFaPD7hY14miQgE+SY2grNxQ01VBp/7AGxnUtJLFZxVj+KLYk/2Rw==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "QWHJ3YA4ZZ7PH7QGYAB2IU7PLUCA3LBO",
+                            TwoFactorEnabled = false,
+                            UserName = "admin@email.hu"
+                        });
+                });
+
+            modelBuilder.Entity("CaffWebApp.DAL.Entites.Caff", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int>("AnimationDuration")
+                        .HasColumnType("int");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("CreatorName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("OriginalFileName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("StoredFileName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTimeOffset>("UploadedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("UploadedById")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UploadedById");
+
+                    b.ToTable("CaffImages");
+                });
+
+            modelBuilder.Entity("CaffWebApp.DAL.Entites.Ciff", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int>("CaffImageId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Caption")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Height")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Tags")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Width")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CaffImageId");
+
+                    b.ToTable("CiffImages");
+                });
+
+            modelBuilder.Entity("CaffWebApp.DAL.Entites.Comment", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("ApplicationUserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("CaffImageId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTimeOffset>("CreateAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("CreatedById")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Text")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ApplicationUserId");
+
+                    b.HasIndex("CaffImageId");
+
+                    b.HasIndex("CreatedById");
+
+                    b.ToTable("Comments");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -114,6 +249,22 @@ namespace CaffWebApp.DAL.Migrations
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
                     b.ToTable("AspNetRoles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "rc95a82e-0abc-4d85-9877-4184177c3a7f",
+                            ConcurrencyStamp = "e388975f-eb14-4f40-ba09-159e4164b513",
+                            Name = "Default",
+                            NormalizedName = "DEFAULT"
+                        },
+                        new
+                        {
+                            Id = "g8aceb4d-b534-459e-8c4e-d13374f43b65",
+                            ConcurrencyStamp = "24d76572-e1bb-4588-b442-b3907c67e05e",
+                            Name = "Admin",
+                            NormalizedName = "ADMIN"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -201,6 +352,13 @@ namespace CaffWebApp.DAL.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("AspNetUserRoles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            UserId = "475c5e32-049c-4d7b-a963-02ebdc15a94b",
+                            RoleId = "g8aceb4d-b534-459e-8c4e-d13374f43b65"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
@@ -220,6 +378,51 @@ namespace CaffWebApp.DAL.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens", (string)null);
+                });
+
+            modelBuilder.Entity("CaffWebApp.DAL.Entites.Caff", b =>
+                {
+                    b.HasOne("CaffWebApp.DAL.Entites.ApplicationUser", "UploadedBy")
+                        .WithMany("CaffImages")
+                        .HasForeignKey("UploadedById")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("UploadedBy");
+                });
+
+            modelBuilder.Entity("CaffWebApp.DAL.Entites.Ciff", b =>
+                {
+                    b.HasOne("CaffWebApp.DAL.Entites.Caff", "CaffImage")
+                        .WithMany("CiffImages")
+                        .HasForeignKey("CaffImageId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("CaffImage");
+                });
+
+            modelBuilder.Entity("CaffWebApp.DAL.Entites.Comment", b =>
+                {
+                    b.HasOne("CaffWebApp.DAL.Entites.ApplicationUser", null)
+                        .WithMany("Comments")
+                        .HasForeignKey("ApplicationUserId");
+
+                    b.HasOne("CaffWebApp.DAL.Entites.Caff", "CaffImage")
+                        .WithMany("Comments")
+                        .HasForeignKey("CaffImageId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("CaffWebApp.DAL.Entites.ApplicationUser", "CreatedBy")
+                        .WithMany()
+                        .HasForeignKey("CreatedById")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("CaffImage");
+
+                    b.Navigation("CreatedBy");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -271,6 +474,20 @@ namespace CaffWebApp.DAL.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("CaffWebApp.DAL.Entites.ApplicationUser", b =>
+                {
+                    b.Navigation("CaffImages");
+
+                    b.Navigation("Comments");
+                });
+
+            modelBuilder.Entity("CaffWebApp.DAL.Entites.Caff", b =>
+                {
+                    b.Navigation("CiffImages");
+
+                    b.Navigation("Comments");
                 });
 #pragma warning restore 612, 618
         }
