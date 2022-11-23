@@ -1,6 +1,7 @@
-﻿using CaffWebApp.Api.Identity;
+using CaffWebApp.Api.Identity;
 using CaffWebApp.Api.Options;
 using CaffWebApp.Api.Swagger;
+using CaffWebApp.BLL;
 using CaffWebApp.DAL;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -41,6 +42,8 @@ internal static class HostingExtensions
         builder.Services.AddControllers();
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddCaffWebAppSwagger(builder.Configuration);
+
+        builder.Services.AddCaffBll();
 
         return builder.Build();
     }

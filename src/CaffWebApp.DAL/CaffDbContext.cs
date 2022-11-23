@@ -6,6 +6,10 @@ namespace CaffWebApp.DAL;
 
 public class CaffDbContext : IdentityDbContext<ApplicationUser>
 {
+    public DbSet<Caff> CaffImages => Set<Caff>();
+    public DbSet<Ciff> CiffImages => Set<Ciff>();
+    public DbSet<Comment> Comments => Set<Comment>();
+
     public CaffDbContext(DbContextOptions<CaffDbContext> options)
         : base(options)
     {
