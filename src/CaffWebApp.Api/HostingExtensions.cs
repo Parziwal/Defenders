@@ -1,4 +1,4 @@
-﻿using CaffWebApp.Api.Identity;
+using CaffWebApp.Api.Identity;
 using CaffWebApp.Api.Options;
 using CaffWebApp.Api.Swagger;
 using CaffWebApp.BLL;
@@ -6,6 +6,7 @@ using CaffWebApp.DAL;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
+using System.Configuration;
 
 namespace CaffWebApp.Api;
 

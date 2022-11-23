@@ -1,4 +1,4 @@
-name: SonarCloud Backend Build
+name: Backend API analysis
 on:
   push:
     branches:
@@ -8,6 +8,10 @@ on:
       - '!src/CaffWebApp.Web/**'
       - '!src/CaffWebApp.Parser/**'
   pull_request:
+    paths:
+      - 'src/**'
+      - '!src/CaffWebApp.Web/**'
+      - '!src/CaffWebApp.Parser/**'
     types: [opened, synchronize, reopened]
   workflow_dispatch:
 
