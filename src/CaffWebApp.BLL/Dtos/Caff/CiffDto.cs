@@ -5,5 +5,13 @@ public class CiffDto
     public string Caption { get; set; } = default!;
     public int Width { get; set; }
     public int Height { get; set; }
-    public string Tags { get; set; } = default!;
+    public List<string> Tags { get; set; } = default!;
+
+    public CiffDto(DAL.Entites.Ciff entity)
+    {
+        Caption = entity.Caption;
+        Width = entity.Width;
+        Height = entity.Height;
+        Tags = entity.Tags.Split(',').ToList();
+    }
 }

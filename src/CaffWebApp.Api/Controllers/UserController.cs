@@ -21,7 +21,7 @@ namespace CaffWebApp.Api.Controllers
             _userService.ListAllUsers();
 
         [HttpPut("{userId}")]
-        public Task DeleteUser(int userId) =>
+        public Task DeleteUser(string userId) =>
             _userService.DeleteUser(userId);
     }
 }

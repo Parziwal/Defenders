@@ -10,4 +10,15 @@ public class CaffDto
     public DateTimeOffset UploadedAt { get; set; }
     public ICollection<string> Captions { get; set; } = default!;
     public ICollection<string> Tags { get; set; } = default!;
+
+    public CaffDto(DAL.Entites.Caff entity)
+    {
+        FileName = entity.StoredFileName;
+        CreatorName = entity.CreatorName;
+        CreatedAt = entity.CreatedAt;
+        UploadedBy = entity.UploadedBy.Fullname;
+        UploadedAt = entity.UploadedAt;
+        Captions = entity.CiffImages.Select(ciff => ciff.Caption).ToList();
+        Tags = entity.CiffImages.SelectMany(ciff => ciff.Tags.Split(',')).ToHashSet();
+    }
 }
