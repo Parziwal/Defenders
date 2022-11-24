@@ -1,24 +1,53 @@
-using CaffWebApp.Api;
+using CaffWebApp.Api.Authentication;
+using CaffWebApp.Api.Identity;
+using CaffWebApp.Api.Swagger;
+using CaffWebApp.BLL;
+using CaffWebApp.DAL;
+using Microsoft.EntityFrameworkCore;
 using Serilog;
-
-Log.Logger = new LoggerConfiguration()
-    .WriteTo.Console()
-    .CreateBootstrapLogger();
-
-Log.Information("Starting up");
 
 try
 {
+    Log.Logger = new LoggerConfiguration().CreateBootstrapLogger();
+
+    Log.Information("Starting up");
+
     var builder = WebApplication.CreateBuilder(args);
 
-    builder.Host.UseSerilog((ctx, lc) => lc
-        .WriteTo.Console(outputTemplate: "[{Timestamp:HH:mm:ss} {Level}] {SourceContext}{NewLine}{Message:lj}{NewLine}{Exception}{NewLine}")
-        .Enrich.FromLogContext()
-        .ReadFrom.Configuration(ctx.Configuration));
+    builder.Host.UseSerilog((ctx, lc) => lc.ReadFrom.Configuration(ctx.Configuration));
 
-    var app = builder
-        .ConfigureServices()
-        .ConfigurePipeline();
+    builder.Services.AddDbContext<CaffDbContext>(options =>
+        options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")!));
+
+    builder.Services.AddCaffWebAppIdentity();
+    builder.Services.AddCaffWebAppIdentityServer();
+    builder.Services.AddCaffWebAppAuthentication(builder.Configuration);
+
+    builder.Services.AddRazorPages();
+    builder.Services.AddControllers();
+    builder.Services.AddEndpointsApiExplorer();
+    builder.Services.AddCaffWebAppSwagger(builder.Configuration);
+
+    builder.Services.AddCaffBll();
+
+    var app = builder.Build();
+
+    app.UseSerilogRequestLogging();
+
+    if (app.Environment.IsDevelopment())
+    {
+        app.UseCaffWebAppSwagger();
+    }
+
+    app.UseHttpsRedirection();
+    app.UseStaticFiles();
+    app.UseRouting();
+    app.UseAuthentication();
+    app.UseIdentityServer();
+    app.UseAuthorization();
+
+    app.MapRazorPages();
+    app.MapControllers();
 
     app.Run();
 }
@@ -31,4 +60,3 @@ finally
     Log.Information("Shut down complete");
     Log.CloseAndFlush();
 }
-
