@@ -9,7 +9,7 @@ public class EntityNotFoundException : Exception
     {
     }
 
-    protected EntityNotFoundException(SerializationInfo info, StreamingContext context)
+    protected EntityNotFoundException(SerializationInfo info, StreamingContext context) : base(info, context)
     {
     }
 }
