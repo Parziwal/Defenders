@@ -8,5 +8,5 @@ public interface ICaffService
     Task<CaffDetailsDto> GetCaffDetails(int caffId);
     Task<FileResultDto> DownloadCaff(int caffId);
     Task<CaffDetailsDto> UploadCaffFile(AddCaffDto caffDto);
-    Task DeleteCaff(int caddId);
+    Task DeleteCaff(int caffId);
 }
