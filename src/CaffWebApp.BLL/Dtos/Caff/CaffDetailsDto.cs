@@ -6,7 +6,7 @@ namespace CaffWebApp.BLL.Dtos.Caff;
 public class CaffDetailsDto
 {
     public int Id { get; set; }
-    public string CreatorName { get; set; } = default!;
+    public string CreatorName { get; set; } = string.Empty;
     public int AnimationDuration { get; set; }
     public string FileName { get; set; } = default!;
     public DateTimeOffset CreatedAt { get; set; }
