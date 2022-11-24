@@ -19,6 +19,10 @@ try
     builder.Services.AddDbContext<CaffDbContext>(options =>
         options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")!));
 
+    builder.Services.AddOptions();
+
+    builder.Services.AddCaffBll(builder.Configuration);
+
     builder.Services.AddCaffWebAppIdentity();
     builder.Services.AddCaffWebAppIdentityServer();
     builder.Services.AddCaffWebAppAuthentication(builder.Configuration);
@@ -27,8 +31,6 @@ try
     builder.Services.AddControllers();
     builder.Services.AddEndpointsApiExplorer();
     builder.Services.AddCaffWebAppSwagger(builder.Configuration);
-
-    builder.Services.AddCaffBll();
 
     var app = builder.Build();
 

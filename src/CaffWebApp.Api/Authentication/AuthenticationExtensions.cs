@@ -1,4 +1,4 @@
-﻿using CaffWebApp.Api.Options;
+﻿using CaffWebApp.BLL.Options;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace CaffWebApp.Api.Authentication;

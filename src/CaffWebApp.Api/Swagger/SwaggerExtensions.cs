@@ -1,5 +1,5 @@
-﻿using CaffWebApp.Api.Options;
-using Microsoft.AspNetCore.Authentication.OAuth;
+﻿using CaffWebApp.BLL.Options;
+using Microsoft.Extensions.Options;
 using NJsonSchema.Generation;
 using NSwag;
 using NSwag.AspNetCore;
@@ -42,8 +42,7 @@ public static class SwaggerExtensions
 
     public static IApplicationBuilder UseCaffWebAppSwagger(this IApplicationBuilder app)
     {
-        var configuration = app.ApplicationServices.GetService<IConfiguration>()!;
-        var caffApiOptions = configuration.GetSection(nameof(CaffWebApiOptions)).Get<CaffWebApiOptions>()!;
+        var caffApiOptions = app.ApplicationServices.GetService<IOptions<CaffWebApiOptions>>()!.Value;
         app.UseOpenApi();
         app.UseSwaggerUi3(settings =>
         {
