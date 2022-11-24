@@ -1,5 +1,6 @@
 ﻿using CaffWebApp.Api.Options;
 using Microsoft.AspNetCore.Authentication.OAuth;
+using NJsonSchema.Generation;
 using NSwag;
 using NSwag.AspNetCore;
 using NSwag.Generation.Processors.Security;
@@ -13,9 +14,12 @@ public static class SwaggerExtensions
         var caffApiOptions = configuration.GetSection(nameof(CaffWebApiOptions)).Get<CaffWebApiOptions>()!;
         services.AddOpenApiDocument(config =>
         {
+            config.DocumentName = "CaffWepApp";
             config.Title = "CaffWepApp Api";
             config.Version = "v1";
-            
+            config.DefaultReferenceTypeNullHandling = ReferenceTypeNullHandling.NotNull;
+            config.DefaultResponseReferenceTypeNullHandling = ReferenceTypeNullHandling.NotNull;
+
             config.AddSecurity("OAuth2", new OpenApiSecurityScheme
             {
                 Type = OpenApiSecuritySchemeType.OAuth2,
@@ -36,9 +40,10 @@ public static class SwaggerExtensions
         return services;
     }
 
-    public static WebApplication UseCaffWebAppSwagger(this WebApplication app)
+    public static IApplicationBuilder UseCaffWebAppSwagger(this IApplicationBuilder app)
     {
-        var caffApiOptions = app.Configuration.GetSection(nameof(CaffWebApiOptions)).Get<CaffWebApiOptions>()!;
+        var configuration = app.ApplicationServices.GetService<IConfiguration>()!;
+        var caffApiOptions = configuration.GetSection(nameof(CaffWebApiOptions)).Get<CaffWebApiOptions>()!;
         app.UseOpenApi();
         app.UseSwaggerUi3(settings =>
         {
