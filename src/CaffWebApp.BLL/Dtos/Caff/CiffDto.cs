@@ -2,10 +2,10 @@
 
 public class CiffDto
 {
-    public string Caption { get; set; } = default!;
+    public string Caption { get; set; }
     public int Width { get; set; }
     public int Height { get; set; }
-    public List<string> Tags { get; set; } = default!;
+    public List<string> Tags { get; set; }
 
     public CiffDto(DAL.Entites.Ciff entity)
     {

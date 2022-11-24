@@ -6,17 +6,18 @@ namespace CaffWebApp.BLL.Dtos.Caff;
 public class CaffDetailsDto
 {
     public int Id { get; set; }
-    public string CreatorName { get; set; } = default!;
+    public string CreatorName { get; set; }
     public int AnimationDuration { get; set; }
-    public string FileName { get; set; } = default!;
+    public string FileName { get; set; }
     public DateTimeOffset CreatedAt { get; set; }
-    public UserDto UploadedBy { get; set; } = default!;
+    public UserDto UploadedBy { get; set; }
     public DateTimeOffset UploadedAt { get; set; }
-    public ICollection<CiffDto> CiffImages { get; set; } = default!;
-    public ICollection<CommentDto> Comments { get; set; } = default!;
+    public ICollection<CiffDto> CiffImages { get; set; }
+    public ICollection<CommentDto> Comments { get; set; }
 
     public CaffDetailsDto(DAL.Entites.Caff entity)
     {
+        Id = entity.Id;
         FileName = entity.StoredFileName;
         CreatorName = entity.CreatorName;
         AnimationDuration = entity.AnimationDuration;
