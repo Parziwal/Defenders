@@ -3,6 +3,7 @@
 #include <iomanip>
 #include <fstream>
 #include <string>
+#define ExternFunction _declspec(dllexport)
 
 const size_t L_BUFFER = 256;
 
@@ -363,4 +364,10 @@ int bigEndianToInt(const unsigned char* buffer, int num_of_bytes) {
         ret |= buffer[i] << (num_of_bytes - i - 1) * 8;
     }
     return ret;
+}
+
+extern "C" {
+    ExternFunction int AddNumber(int a, int b) {
+        return a + b;
+    }
 }
