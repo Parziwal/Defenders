@@ -13,14 +13,17 @@ public static class AuthenticationExtensions
             {
                 options.Audience = caffApiOptions.Audience;
                 options.Authority = caffApiOptions.Authority;
+                options.TokenValidationParameters.ValidTypes = new[] { "at+jwt" };
             });
         services.AddAuthorization(options =>
         {
-            options.AddPolicy("ApiScope", policy =>
+            options.AddPolicy("Default", policy =>
             {
                 policy.RequireAuthenticatedUser();
-                policy.RequireClaim("scope", "api1");
+                policy.RequireClaim("scope", "caffwebapp.api");
             });
+
+            options.DefaultPolicy = options.GetPolicy("Default")!;
         });
 
         return services;

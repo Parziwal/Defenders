@@ -1,6 +1,5 @@
 ﻿using CaffWebApp.BLL.Dtos.User;
 using CaffWebApp.BLL.Services.User;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CaffWebApp.Api.Controllers

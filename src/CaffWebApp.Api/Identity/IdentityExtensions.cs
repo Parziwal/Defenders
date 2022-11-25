@@ -40,5 +40,6 @@ public static class IdentityExtensions
         .AddInMemoryApiScopes(Config.ApiScopes)
         .AddInMemoryApiResources(Config.ApiResources)
         .AddInMemoryClients(Config.Clients)
-        .AddAspNetIdentity<ApplicationUser>();
+        .AddAspNetIdentity<ApplicationUser>()
+        .AddProfileService<IdentityProfileService>();
 }

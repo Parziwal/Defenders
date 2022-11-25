@@ -1,6 +1,5 @@
 ﻿using Duende.IdentityServer;
 using Duende.IdentityServer.Models;
-using IdentityModel;
 
 namespace CaffWebApp.Api.Identity;
 
@@ -11,7 +10,8 @@ public static class Config
         {
             new IdentityResources.OpenId(),
             new IdentityResources.Profile(),
-            new IdentityResources.Email()
+            new IdentityResources.Email(),
+            new IdentityResource("role", new [] { "role" })
         };
 
     public static IEnumerable<ApiScope> ApiScopes =>
@@ -38,17 +38,19 @@ public static class Config
                 RequirePkce = true,
                 RequireConsent = false,
                 AccessTokenLifetime = 3600,
-                RedirectUris = { "https://localhost:4200" },
-                PostLogoutRedirectUris = { "https://localhost:4200" },
-                AllowedCorsOrigins = { "https://localhost:4200" },
+                RedirectUris = { "http://localhost:4200", "https://localhost:4200" },
+                PostLogoutRedirectUris = { "http://localhost:4200", "https://localhost:4200" },
+                AllowedCorsOrigins = { "http://localhost:4200", "https://localhost:4200" },
 
                 AllowedScopes = new List<string>
                 {
                     IdentityServerConstants.StandardScopes.OpenId,
                     IdentityServerConstants.StandardScopes.Profile,
                     IdentityServerConstants.StandardScopes.Email,
+                    "role",
                     "caffwebapp.api"
-                }
+                },
+                AlwaysIncludeUserClaimsInIdToken = true,
             },
              new Client
             {
