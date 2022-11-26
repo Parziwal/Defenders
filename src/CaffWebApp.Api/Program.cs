@@ -1,6 +1,7 @@
 using CaffWebApp.Api.Authentication;
 using CaffWebApp.Api.Identity;
 using CaffWebApp.Api.ProblemDetails;
+using CaffWebApp.Api.StaticFile;
 using CaffWebApp.Api.Swagger;
 using CaffWebApp.BLL;
 using CaffWebApp.DAL;
@@ -45,7 +46,7 @@ try
 
     app.UseProblemDetails();
     app.UseHttpsRedirection();
-    app.UseStaticFiles();
+    app.UseCaffStaticFiles();
     app.UseRouting();
     app.UseAuthentication();
     app.UseIdentityServer();

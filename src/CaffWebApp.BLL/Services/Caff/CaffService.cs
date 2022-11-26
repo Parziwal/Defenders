@@ -88,10 +88,10 @@ public class CaffService : ICaffService
         {
             CreatorName = parsedCaff.CreaterName,
             AnimationDuration = parsedCaff.AnimationDuration,
-            OriginalFileName = parsedCaff.FileName,
-            StoredFileName = Guid.NewGuid().ToString(),
+            OriginalFileName = parsedCaff.OriginalFileName,
+            StoredFileName = parsedCaff.StoredFileName,
             CreatedAt = parsedCaff.CreatedAt,
-            UploadedById = _httpContext.GetCurrentUserId(),
+            UploadedBy = await _dbContext.Users.SingleAsync(user => user.Id == _httpContext.GetCurrentUserId()),
             UploadedAt = DateTimeOffset.Now,
             CiffImages = parsedCaff.CiffData.Select(ciff =>
                 new DAL.Entites.Ciff()

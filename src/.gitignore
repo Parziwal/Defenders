@@ -405,3 +405,4 @@ CaffWebApp.Parser/*.bmp
 # API
 CaffWebApp.Api/keys
 CaffWebApp.Api/native
+CaffWebApp.Api/images

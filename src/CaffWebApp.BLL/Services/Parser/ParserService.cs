@@ -10,9 +10,7 @@ public class ParserService : IParserService
 {
     private readonly CaffImagePathOptions _imagePath;
 
-    private const string _parserPath = "native/CaffWebApp.Parser.dll";
-
-    [DllImport(_parserPath, CallingConvention = CallingConvention.Cdecl)]
+    [DllImport("native/CaffWebApp.Parser.dll", CallingConvention = CallingConvention.Cdecl)]
     private static extern int AddNumber(int a, int b);
 
     public ParserService(IOptions<CaffImagePathOptions> imagePath)
@@ -27,14 +25,23 @@ public class ParserService : IParserService
 
     public async Task<CaffParsedDto> ParseCaffFile(AddCaffDto caffDto)
     {
-        var a = AddNumber(10, 11);
-
-        return new CaffParsedDto()
+        var parsedCaff = new CaffParsedDto()
         {
-            FileName = "Test",
+            StoredFileName = $"{Guid.NewGuid()}.caff",
+            OriginalFileName = caffDto.CaffFile.FileName,
             CreaterName = "Test",
             CreatedAt = DateTimeOffset.Now,
-            AnimationDuration = a,
+            AnimationDuration = 10,
         };
+        
+        string filePath = Path.Combine(_imagePath.Raw, parsedCaff.StoredFileName);
+        using (Stream fileStream = new FileStream(filePath, FileMode.Create))
+        {
+            await caffDto.CaffFile.CopyToAsync(fileStream);
+        }
+        
+        var a = AddNumber(10, 11);
+
+        return parsedCaff;
     }
 }
