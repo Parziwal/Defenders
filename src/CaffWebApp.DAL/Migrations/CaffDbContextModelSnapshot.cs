@@ -45,6 +45,9 @@ namespace CaffWebApp.DAL.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
 
@@ -89,6 +92,26 @@ namespace CaffWebApp.DAL.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "475c5e32-049c-4d7b-a963-02ebdc15a94b",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "70ceb6e6-9a79-4fb8-b325-93453e2021b1",
+                            Email = "admin@email.hu",
+                            EmailConfirmed = true,
+                            Fullname = "Admin",
+                            IsDeleted = false,
+                            LockoutEnabled = false,
+                            NormalizedEmail = "ADMIN@EMAIL.HU",
+                            NormalizedUserName = "ADMIN@EMAIL.HU",
+                            PasswordHash = "AQAAAAEAACcQAAAAEAYhQeew7rP4OrFaPD7hY14miQgE+SY2grNxQ01VBp/7AGxnUtJLFZxVj+KLYk/2Rw==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "QWHJ3YA4ZZ7PH7QGYAB2IU7PLUCA3LBO",
+                            TwoFactorEnabled = false,
+                            UserName = "admin@email.hu"
+                        });
                 });
 
             modelBuilder.Entity("CaffWebApp.DAL.Entites.Caff", b =>
@@ -121,6 +144,7 @@ namespace CaffWebApp.DAL.Migrations
                         .HasColumnType("datetimeoffset");
 
                     b.Property<string>("UploadedById")
+                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
@@ -170,6 +194,9 @@ namespace CaffWebApp.DAL.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
+                    b.Property<string>("ApplicationUserId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<int>("CaffImageId")
                         .HasColumnType("int");
 
@@ -177,6 +204,7 @@ namespace CaffWebApp.DAL.Migrations
                         .HasColumnType("datetimeoffset");
 
                     b.Property<string>("CreatedById")
+                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Text")
@@ -184,6 +212,8 @@ namespace CaffWebApp.DAL.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ApplicationUserId");
 
                     b.HasIndex("CaffImageId");
 
@@ -217,6 +247,22 @@ namespace CaffWebApp.DAL.Migrations
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
                     b.ToTable("AspNetRoles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "rc95a82e-0abc-4d85-9877-4184177c3a7f",
+                            ConcurrencyStamp = "e388975f-eb14-4f40-ba09-159e4164b513",
+                            Name = "Default",
+                            NormalizedName = "DEFAULT"
+                        },
+                        new
+                        {
+                            Id = "g8aceb4d-b534-459e-8c4e-d13374f43b65",
+                            ConcurrencyStamp = "24d76572-e1bb-4588-b442-b3907c67e05e",
+                            Name = "Admin",
+                            NormalizedName = "ADMIN"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -304,6 +350,13 @@ namespace CaffWebApp.DAL.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("AspNetUserRoles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            UserId = "475c5e32-049c-4d7b-a963-02ebdc15a94b",
+                            RoleId = "g8aceb4d-b534-459e-8c4e-d13374f43b65"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
@@ -329,7 +382,9 @@ namespace CaffWebApp.DAL.Migrations
                 {
                     b.HasOne("CaffWebApp.DAL.Entites.ApplicationUser", "UploadedBy")
                         .WithMany("CaffImages")
-                        .HasForeignKey("UploadedById");
+                        .HasForeignKey("UploadedById")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("UploadedBy");
                 });
@@ -347,6 +402,10 @@ namespace CaffWebApp.DAL.Migrations
 
             modelBuilder.Entity("CaffWebApp.DAL.Entites.Comment", b =>
                 {
+                    b.HasOne("CaffWebApp.DAL.Entites.ApplicationUser", null)
+                        .WithMany("Comments")
+                        .HasForeignKey("ApplicationUserId");
+
                     b.HasOne("CaffWebApp.DAL.Entites.Caff", "CaffImage")
                         .WithMany("Comments")
                         .HasForeignKey("CaffImageId")
@@ -354,8 +413,10 @@ namespace CaffWebApp.DAL.Migrations
                         .IsRequired();
 
                     b.HasOne("CaffWebApp.DAL.Entites.ApplicationUser", "CreatedBy")
-                        .WithMany("Comments")
-                        .HasForeignKey("CreatedById");
+                        .WithMany()
+                        .HasForeignKey("CreatedById")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
 
                     b.Navigation("CaffImage");
 

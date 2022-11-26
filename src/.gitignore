@@ -402,4 +402,6 @@ CaffParser.exe
 CaffWebApp.Parser.o
 CaffWebApp.Parser/*.bmp
 
-is-signing-key*.json
+# API
+CaffWebApp.Api/keys
+CaffWebApp.Api/native

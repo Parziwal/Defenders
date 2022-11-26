@@ -6,4 +6,5 @@ namespace CaffWebApp.BLL.Services.Parser;
 public interface IParserService
 {
     Task<CaffParsedDto> ParseCaffFile(AddCaffDto caffDto);
+    Task<byte[]> GetCaffFileContent(string fileName);
 }

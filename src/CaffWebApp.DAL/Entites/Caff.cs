@@ -14,6 +14,7 @@ public class Caff
     public string OriginalFileName { get; set; } = default!;
     public string StoredFileName { get; set; } = default!;
     public DateTimeOffset CreatedAt { get; set; }
+    public string UploadedById { get; set; } = default!;
     public ApplicationUser UploadedBy { get; set; } = default!;
     public DateTimeOffset UploadedAt { get; set; }
     public ICollection<Ciff> CiffImages { get; set; } = default!;

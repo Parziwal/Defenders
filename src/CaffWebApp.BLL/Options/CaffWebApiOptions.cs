@@ -1,4 +1,4 @@
-﻿namespace CaffWebApp.Api.Options;
+﻿namespace CaffWebApp.BLL.Options;
 
 public class CaffWebApiOptions
 {
