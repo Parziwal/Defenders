@@ -20,7 +20,7 @@ public static class IdentityExtensions
         })
         .AddEntityFrameworkStores<CaffDbContext>()
         .AddDefaultTokenProviders();
-    
+
     public static IIdentityServerBuilder AddCaffWebAppIdentityServer(this IServiceCollection services) =>
         services.ConfigureApplicationCookie(options =>
         {
@@ -34,11 +34,11 @@ public static class IdentityExtensions
             options.Events.RaiseInformationEvents = true;
             options.Events.RaiseFailureEvents = true;
             options.Events.RaiseSuccessEvents = true;
-            options.EmitStaticAudienceClaim = true;
+            options.EmitStaticAudienceClaim = false;
         })
         .AddInMemoryIdentityResources(Config.IdentityResources)
-        .AddInMemoryApiScopes(Config.ApiScopes)
         .AddInMemoryApiResources(Config.ApiResources)
+        .AddInMemoryApiScopes(Config.ApiScopes)
         .AddInMemoryClients(Config.Clients)
         .AddAspNetIdentity<ApplicationUser>()
         .AddProfileService<IdentityProfileService>();

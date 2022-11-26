@@ -1,9 +1,12 @@
 ﻿using CaffWebApp.BLL.Dtos.Caff;
 using CaffWebApp.BLL.Services.Caff;
+using CaffWebApp.DAL.Entites;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CaffWebApp.Api.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class CaffController : ControllerBase
@@ -35,6 +38,7 @@ namespace CaffWebApp.Api.Controllers
         public Task<CaffDetailsDto> UploadCaffFile([FromForm] AddCaffDto caffDto) =>
             _caffService.UploadCaffFile(caffDto);
 
+        [Authorize(Policy = UserRoles.Admin)]
         [HttpDelete("{caffId}")]
         public Task DeleteCaff(int caffId) =>
             _caffService.DeleteCaff(caffId);

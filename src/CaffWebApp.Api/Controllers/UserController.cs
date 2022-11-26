@@ -1,9 +1,13 @@
 ﻿using CaffWebApp.BLL.Dtos.User;
 using CaffWebApp.BLL.Services.User;
+using CaffWebApp.DAL.Entites;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CaffWebApp.Api.Controllers
 {
+    [Authorize(Policy = UserRoles.Admin)]
     [Route("api/[controller]")]
     [ApiController]
     public class UserController : ControllerBase
@@ -19,7 +23,7 @@ namespace CaffWebApp.Api.Controllers
         public Task<List<UserDto>> ListAllUsers() =>
             _userService.ListAllUsers();
 
-        [HttpPut("{userId}")]
+        [HttpDelete("{userId}")]
         public Task DeleteUser(string userId) =>
             _userService.DeleteUser(userId);
     }

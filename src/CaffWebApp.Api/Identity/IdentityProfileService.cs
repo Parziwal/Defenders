@@ -17,20 +17,17 @@ namespace CaffWebApp.Api.Identity
         public override async Task GetProfileDataAsync(ProfileDataRequestContext context)
         {
             var user = await UserManager.GetUserAsync(context.Subject);
-            var principal = await GetUserClaimsAsync(user);
-            var id = (ClaimsIdentity)principal.Identity!;
             IList<string> roles = await UserManager.GetRolesAsync(user);
 
-            Claim nameClaim = id.FindFirst(JwtClaimTypes.Name)!;
-            id.RemoveClaim(nameClaim);
-            id.AddClaim(new Claim(JwtClaimTypes.Name, user.Fullname));
-            id.AddClaim(new Claim(IdentityServerConstants.StandardScopes.Email, user.Email));
+            var claims = new List<Claim>();
+            claims.Add(new Claim(JwtClaimTypes.Name, user.Fullname));
+            claims.Add(new Claim(JwtClaimTypes.Email, user.Email));
             foreach (string role in roles)
             {
-                id.AddClaim(new Claim(JwtClaimTypes.Role, role));
+                claims.Add(new Claim(JwtClaimTypes.Role, role));
             }
 
-            context.AddRequestedClaims(principal.Claims);
+            context.IssuedClaims.AddRange(claims);
         }
     }
 }

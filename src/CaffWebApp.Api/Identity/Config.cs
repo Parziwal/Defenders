@@ -1,5 +1,7 @@
 ﻿using Duende.IdentityServer;
 using Duende.IdentityServer.Models;
+using IdentityModel;
+using System.Security.Claims;
 
 namespace CaffWebApp.Api.Identity;
 
@@ -11,7 +13,7 @@ public static class Config
             new IdentityResources.OpenId(),
             new IdentityResources.Profile(),
             new IdentityResources.Email(),
-            new IdentityResource("role", new [] { "role" })
+            new IdentityResource(JwtClaimTypes.Role, new [] { JwtClaimTypes.Role })
         };
 
     public static IEnumerable<ApiScope> ApiScopes =>
@@ -23,7 +25,7 @@ public static class Config
     public static IEnumerable<ApiResource> ApiResources =>
         new List<ApiResource>
         {
-            new ApiResource("caffwebapp.api", "CaffWebApp API", new List<string>() { "caffwebapp.api" })
+
         };
 
     public static IEnumerable<Client> Clients =>
@@ -38,7 +40,7 @@ public static class Config
                 RequirePkce = true,
                 RequireConsent = false,
                 AccessTokenLifetime = 3600,
-                RedirectUris = { "http://localhost:4200", "https://localhost:4200" },
+                RedirectUris = { "http://localhost:4200", "https://localhost:4200", "https://oauth.pstmn.io/v1/callback" },
                 PostLogoutRedirectUris = { "http://localhost:4200", "https://localhost:4200" },
                 AllowedCorsOrigins = { "http://localhost:4200", "https://localhost:4200" },
 
@@ -47,7 +49,7 @@ public static class Config
                     IdentityServerConstants.StandardScopes.OpenId,
                     IdentityServerConstants.StandardScopes.Profile,
                     IdentityServerConstants.StandardScopes.Email,
-                    "role",
+                    JwtClaimTypes.Role,
                     "caffwebapp.api"
                 },
                 AlwaysIncludeUserClaimsInIdToken = true,
@@ -67,6 +69,7 @@ public static class Config
                 AllowedScopes = new List<string>
                 {
                     IdentityServerConstants.StandardScopes.OpenId,
+                    JwtClaimTypes.Role,
                     "caffwebapp.api"
                 }
             }

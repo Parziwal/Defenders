@@ -4,6 +4,7 @@ using NJsonSchema.Generation;
 using NSwag;
 using NSwag.AspNetCore;
 using NSwag.Generation.Processors.Security;
+using NuGet.Packaging;
 
 namespace CaffWebApp.Api.Swagger;
 
@@ -27,9 +28,9 @@ public static class SwaggerExtensions
                 {
                     AuthorizationCode = new OpenApiOAuthFlow
                     {
-                        AuthorizationUrl = $"{caffApiOptions.Authority}/connect/authorize",
-                        TokenUrl = $"{caffApiOptions.Authority}/connect/token",
-                        Scopes = new Dictionary<string, string> { {caffApiOptions.ApiScope , caffApiOptions.ApiScopeDisplayName } },
+                        AuthorizationUrl = $"{caffApiOptions.BaseUrl}/connect/authorize",
+                        TokenUrl = $"{caffApiOptions.BaseUrl}/connect/token",
+                        Scopes = caffApiOptions.SwaggerClientScopes,
                     },
                 },
             });
@@ -51,7 +52,7 @@ public static class SwaggerExtensions
                 ClientId = caffApiOptions.SwaggerClientId,
                 UsePkceWithAuthorizationCodeGrant = true,
             };
-            settings.OAuth2Client.Scopes.Add(caffApiOptions.ApiScope);
+            settings.OAuth2Client.Scopes.AddRange(caffApiOptions.SwaggerClientScopes.Keys);
         });
 
         return app;
