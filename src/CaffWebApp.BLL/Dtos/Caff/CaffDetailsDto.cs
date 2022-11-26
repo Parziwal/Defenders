@@ -24,7 +24,7 @@ public class CaffDetailsDto
         CreatedAt = entity.CreatedAt;
         UploadedBy = new UserDto(entity.UploadedBy);
         UploadedAt = entity.UploadedAt;
-        CiffImages = entity.CiffImages.Select(ciff => new CiffDto(ciff)).ToList();
-        Comments = entity.Comments.Select(comments => new CommentDto(comments)).ToList();
+        CiffImages = entity.CiffImages?.Select(ciff => new CiffDto(ciff)).ToList() ?? new();
+        Comments = entity.Comments?.Select(comments => new CommentDto(comments)).ToList() ?? new();
     }
 }

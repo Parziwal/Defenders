@@ -21,6 +21,10 @@ public class CaffDbContext : IdentityDbContext<ApplicationUser>
     {
         base.OnModelCreating(builder);
 
+        builder.Entity<ApplicationUser>().HasQueryFilter(user => !user.IsDeleted);
+        builder.Entity<ApplicationUser>().HasMany(user => user.CaffImages).WithOne(caff => caff.UploadedBy).IsRequired(false);
+        builder.Entity<ApplicationUser>().HasMany(user => user.Comments).WithOne(comment => comment.CreatedBy).IsRequired(false);
+
         builder.Entity<Comment>()
             .HasOne(c => c.CreatedBy)
             .WithMany()

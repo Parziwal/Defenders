@@ -1,8 +1,11 @@
 using CaffWebApp.Api.Authentication;
 using CaffWebApp.Api.Identity;
+using CaffWebApp.Api.ProblemDetails;
+using CaffWebApp.Api.StaticFile;
 using CaffWebApp.Api.Swagger;
 using CaffWebApp.BLL;
 using CaffWebApp.DAL;
+using Hellang.Middleware.ProblemDetails;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 
@@ -19,8 +22,6 @@ try
     builder.Services.AddDbContext<CaffDbContext>(options =>
         options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")!));
 
-    builder.Services.AddOptions();
-
     builder.Services.AddCaffBll(builder.Configuration);
 
     builder.Services.AddCaffWebAppIdentity();
@@ -31,6 +32,8 @@ try
     builder.Services.AddControllers();
     builder.Services.AddEndpointsApiExplorer();
     builder.Services.AddCaffWebAppSwagger(builder.Configuration);
+    builder.Services.AddCaffWebAppProblemDetails();
+    builder.Services.AddHttpContextAccessor();
 
     var app = builder.Build();
 
@@ -41,15 +44,17 @@ try
         app.UseCaffWebAppSwagger();
     }
 
+    app.UseProblemDetails();
     app.UseHttpsRedirection();
-    app.UseStaticFiles();
+    app.UseCaffStaticFiles();
     app.UseRouting();
     app.UseAuthentication();
     app.UseIdentityServer();
     app.UseAuthorization();
 
     app.MapRazorPages();
-    app.MapControllers();
+    app.MapControllers()
+        .RequireAuthorization(AuthenticationExtensions.DefaultApiPolicy);
 
     app.Run();
 }
