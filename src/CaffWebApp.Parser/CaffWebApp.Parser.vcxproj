@@ -131,6 +131,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="CaffWebApp.Parser.cpp" />
+    <ClCompile Include="gifanim.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="1.caff" />
@@ -139,6 +140,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CaffWebApp.Parser.hpp" />
+    <ClInclude Include="gifanim.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
