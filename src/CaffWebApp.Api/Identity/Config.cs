@@ -40,9 +40,9 @@ public static class Config
                 RequirePkce = true,
                 RequireConsent = false,
                 AccessTokenLifetime = 3600,
-                RedirectUris = { "http://localhost:4200", "https://localhost:4200", "https://oauth.pstmn.io/v1/callback" },
-                PostLogoutRedirectUris = { "http://localhost:4200", "https://localhost:4200" },
-                AllowedCorsOrigins = { "http://localhost:4200", "https://localhost:4200" },
+                RedirectUris = { "https://localhost:4200/login-callback" },
+                PostLogoutRedirectUris = { "https://localhost:4200/logout-callback" },
+                AllowedCorsOrigins = { "https://localhost:4200",  },
 
                 AllowedScopes = new List<string>
                 {
