@@ -401,6 +401,8 @@ FodyWeavers.xsd
 CaffParser.exe
 CaffWebApp.Parser.o
 CaffWebApp.Parser/*.bmp
+CaffWebApp.Parser/gifanim.o
+CaffWebApp.Parser/*.gif
 
 # API
 CaffWebApp.Api/keys
