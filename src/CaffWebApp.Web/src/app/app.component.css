@@ -1,0 +1,13 @@
+.navbar{
+    border-radius: 1rem;
+    padding: 0; 
+}
+.navlink{
+    padding: 1rem 1rem;
+    border-radius: 1rem;
+}
+.navlink:hover{
+    background-color: rgba(13, 110, 253, 0.3);
+    cursor: pointer;
+}
+
