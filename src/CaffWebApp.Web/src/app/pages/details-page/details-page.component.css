@@ -1,0 +1,4 @@
+.details-container > * {
+  padding:0.5rem 0.8rem;
+  background: lightcyan;
+}
