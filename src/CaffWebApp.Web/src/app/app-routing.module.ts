@@ -4,6 +4,9 @@ import { RouterModule, Routes } from '@angular/router';
 import { LogoutCallbackComponent } from './auth/logout-callback.component';
 import { HomeComponent } from './pages/home/home.component';
 import { LoginCallbackComponent } from './auth/login-callback.component';
+import {AdminPageComponent} from "./pages/admin-page/admin-page.component";
+import {DetailsPageComponent} from "./pages/details-page/details-page.component";
+import {ListPageComponent} from "./pages/list-page/list-page.component";
 
 
 const routes: Routes = [
@@ -23,6 +26,18 @@ const routes: Routes = [
   {
     path: 'logout-callback',
     component: LogoutCallbackComponent,
+  },
+  {
+    path: 'admin',
+    component: AdminPageComponent,
+  },
+  {
+    path: 'details',
+    component: DetailsPageComponent,
+  },
+  {
+    path: 'list',
+    component: ListPageComponent,
   },
 ];
 @NgModule({
