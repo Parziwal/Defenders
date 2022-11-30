@@ -6,11 +6,17 @@ import { AppComponent } from './app.component';
 import { HomeComponent } from './pages/home/home.component';
 import { AppRoutingModule } from './app-routing.module';
 import { AuthModule } from './auth/auth.module';
+import { AdminPageComponent } from './pages/admin-page/admin-page.component';
+import { DeatailsPageComponent } from './pages/deatails-page/deatails-page.component';
+import { ListPageComponent } from './pages/list-page/list-page.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    HomeComponent
+    HomeComponent,
+    AdminPageComponent,
+    DeatailsPageComponent,
+    ListPageComponent
   ],
   imports: [
     BrowserModule, HttpClientModule, AppRoutingModule, AuthModule
