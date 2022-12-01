@@ -9,6 +9,19 @@ export class AdminPageComponent implements OnInit {
 
   constructor() { }
 
+  users = [
+    {
+      "id": "1",
+      "fullName": "Kis Károly",
+      "email": "kis.karcsi@gmail.com"
+    },
+    {
+      "id": "2",
+      "fullName": "Nagy Károly",
+      "email": "nagy.karcsi@gmail.com"
+    }
+  ]
+
   ngOnInit(): void {
   }
 
