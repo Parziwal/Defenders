@@ -20,7 +20,7 @@ int main(int argc, char* argv[]) {
         return 1;
     }
     std::string outputFileName = filename + ".gif";
-    int return_code = parseCaffImage(caff, filename, outputFileName);
+    int return_code = parseCaffImage(caff, outputFileName);
     caff.close();
     if (return_code == 0)
         std::cout << std::endl << "A generalt GIF a beadott CAFF fajl mappajaban talalhato." << std::endl;
@@ -32,7 +32,7 @@ void emptyCaffBuffer(char* buffer, int length) {
         buffer[i] = 0;
 }
 
-int parseCaffImage(std::ifstream& caff, std::string& filename, std::string& outputFileName) {
+int parseCaffImage(std::ifstream& caff, std::string& outputFileName) {
     auto caffBuffer = new char[L_BUFFER];
 
     emptyCaffBuffer(caffBuffer, L_BUFFER);
@@ -336,7 +336,7 @@ extern "C" {
         std::string file_in = filePath;
         std::string file_out = outputPath;
 
-        int return_code = parseCaffImage(caff, file_in, file_out);
+        int return_code = parseCaffImage(caff, file_out);
         caff.close();
         if (return_code != 0) {
             std::string meta_file = file_out + ".metadata";
