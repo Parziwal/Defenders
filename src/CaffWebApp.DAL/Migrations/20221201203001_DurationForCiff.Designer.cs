@@ -4,6 +4,7 @@ using CaffWebApp.DAL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CaffWebApp.DAL.Migrations
 {
     [DbContext(typeof(CaffDbContext))]
-    partial class CaffDbContextModelSnapshot : ModelSnapshot
+    [Migration("20221201203001_DurationForCiff")]
+    partial class DurationForCiff
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
