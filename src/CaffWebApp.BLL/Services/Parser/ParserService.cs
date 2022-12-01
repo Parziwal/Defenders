@@ -11,7 +11,7 @@ public class ParserService : IParserService
     private readonly CaffImagePathOptions _imagePath;
 
     [DllImport("native/CaffWebApp.Parser.dll", CallingConvention = CallingConvention.Cdecl)]
-    private static extern int AddNumber(int a, int b);
+    private static extern int ParseCaffFile(string filePath, string outputPath);
 
     public ParserService(IOptions<CaffImagePathOptions> imagePath)
     {
@@ -27,21 +27,41 @@ public class ParserService : IParserService
     {
         var parsedCaff = new CaffParsedDto()
         {
-            StoredFileName = $"{Guid.NewGuid()}.caff",
+            StoredFileName = Guid.NewGuid().ToString(),
             OriginalFileName = caffDto.CaffFile.FileName,
-            CreaterName = "Test",
+            CreatorName = "Test",
             CreatedAt = DateTimeOffset.Now,
-            AnimationDuration = 10,
+            CiffData = new()
         };
         
-        string filePath = Path.Combine(_imagePath.Raw, parsedCaff.StoredFileName);
+        string filePath = Path.Combine(Directory.GetCurrentDirectory(), _imagePath.Raw, parsedCaff.StoredFileName + ".caff");
+        string outputPath = Path.Combine(Directory.GetCurrentDirectory(), _imagePath.Parsed, parsedCaff.StoredFileName + ".gif");
         using (Stream fileStream = new FileStream(filePath, FileMode.Create))
         {
             await caffDto.CaffFile.CopyToAsync(fileStream);
         }
-        
-        var a = AddNumber(10, 11);
 
+        if (ParseCaffFile(filePath, outputPath) != 0)
+            return null;
+
+        using (var metaDataReader = new StreamReader(outputPath + ".metadata"))
+        {
+            var numAnim = Convert.ToInt32(metaDataReader.ReadLine());
+            parsedCaff.CreatedAt = DateTimeOffset.Parse(metaDataReader.ReadLine());
+            parsedCaff.CreatorName = metaDataReader.ReadLine() ?? "";
+            
+            for (int i = 0; !metaDataReader.EndOfStream && i < numAnim; i++)
+            {
+                var size = metaDataReader.ReadLine().Split('x');
+                parsedCaff.CiffData.Add(new());
+                parsedCaff.CiffData[i].Width = Convert.ToInt32(size[0]);
+                parsedCaff.CiffData[i].Height = Convert.ToInt32(size[1]);
+                parsedCaff.CiffData[i].Duration = Convert.ToInt32(metaDataReader.ReadLine());
+                parsedCaff.CiffData[i].Caption = metaDataReader.ReadLine();
+                parsedCaff.CiffData[i].Tags = metaDataReader.ReadLine();
+            }
+        }
+        File.Delete(outputPath + ".metadata");
         return parsedCaff;
     }
 }

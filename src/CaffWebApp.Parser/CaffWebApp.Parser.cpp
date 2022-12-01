@@ -19,8 +19,8 @@ int main(int argc, char* argv[]) {
         std::cout << "Nem sikerult megnyitni a bemeneti fajlt" << std::endl;
         return 1;
     }
-
-    int return_code = parseCaffFile(caff, filename);
+    std::string outputFileName = filename + ".gif";
+    int return_code = parseCaffImage(caff, filename, outputFileName);
     caff.close();
     if (return_code == 0)
         std::cout << std::endl << "A generalt GIF a beadott CAFF fajl mappajaban talalhato." << std::endl;
@@ -32,7 +32,7 @@ void emptyCaffBuffer(char* buffer, int length) {
         buffer[i] = 0;
 }
 
-int parseCaffFile(std::ifstream& caff, std::string& filename) {
+int parseCaffImage(std::ifstream& caff, std::string& filename, std::string& outputFileName) {
     auto caffBuffer = new char[L_BUFFER];
 
     emptyCaffBuffer(caffBuffer, L_BUFFER);
@@ -84,6 +84,11 @@ int parseCaffFile(std::ifstream& caff, std::string& filename) {
     }
     /// num_anim (for annual GIF conversion in the future)
     int num_anim = (*endianConverter)((const unsigned char*)(&caffBuffer[12]), 8);
+
+    std::string outputMetaDataFileName = outputFileName + ".metadata";
+    std::ofstream meta_out(outputMetaDataFileName.c_str(), std::ofstream::out);
+
+    meta_out << num_anim << std::endl;
 
     /// NEW BLOCK!!!
     emptyCaffBuffer(caffBuffer, L_BUFFER);
@@ -138,6 +143,13 @@ int parseCaffFile(std::ifstream& caff, std::string& filename) {
         << std::setfill('0') << std::setw(2) << minute << std::endl;
     std::cout << "Kepek keszitoje: " << creator << std::endl;
     std::cout << "CIFF kepek szama a fajlban: " << num_anim << std::endl;
+
+    meta_out << year << '-'
+        << std::setfill('0') << std::setw(2) << month << '-'
+        << std::setfill('0') << std::setw(2) << day << " "
+        << std::setfill('0') << std::setw(2) << hour << ':'
+        << std::setfill('0') << std::setw(2) << minute << std::endl;
+    meta_out << creator << std::endl;
     delete[] creator;
 
     GifAnim gifAnim;
@@ -205,9 +217,8 @@ int parseCaffFile(std::ifstream& caff, std::string& filename) {
             std::cout << "Rossz kep meret informacio a CIFF headerben" << std::endl;
             return 1;
         }
-        std::string new_file_name = filename + ".gif";
         if (i == 0)
-            gifAnim.GifBegin(&gifWriter, new_file_name.c_str(), ciff_width, ciff_height, duration, num_anim, 8, false);
+            gifAnim.GifBegin(&gifWriter, outputFileName.c_str(), ciff_width, ciff_height, duration, num_anim, 8, false);
 
         emptyCaffBuffer(caffBuffer, L_BUFFER);
         int capt_size = ciff_header_size - 36;
@@ -231,9 +242,12 @@ int parseCaffFile(std::ifstream& caff, std::string& filename) {
 
         std::cout << std::endl << (i + 1) << ". CIFF metaadatai" << std::endl;
         std::cout << "Kep merete: " << ciff_width << "x" << ciff_height << " px" << std::endl;
+        meta_out << ciff_width << "x" << ciff_height << std::endl;
         std::cout << "Animacio hossza: " << duration << " ms" << std::endl;
+        meta_out << duration << std::endl;
 
         std::cout << "Kep felirata: " << caption.substr(0, pos) << std::endl;
+        meta_out << caption.substr(0, pos) << std::endl;
         caption.erase(0, pos + 1);
         pos = caption.find('\0');
         if (pos == std::string::npos) {
@@ -243,16 +257,20 @@ int parseCaffFile(std::ifstream& caff, std::string& filename) {
         std::cout << "Tagek: ";
         while (pos != std::string::npos) {
             std::cout << caption.substr(0, pos);
+            meta_out << caption.substr(0, pos);
             caption.erase(0, pos + 1);
             pos = caption.find('\0');
-            if (pos != std::string::npos)
+            if (pos != std::string::npos) {
                 std::cout << ", ";
+                meta_out << ",";
+            }
         }
         std::cout << std::endl;
+        meta_out << std::endl;
 
         if (writeGif(caff, ciff_width, ciff_height, gifAnim, gifWriter, duration) != 0) {
             gifAnim.GifEnd(&gifWriter);
-            std::remove(new_file_name.c_str());
+            std::remove(outputFileName.c_str());
             return 1;
         }
     }
@@ -309,8 +327,23 @@ int bigEndianToInt(const unsigned char* buffer, int num_of_bytes) {
 #define ExternFunction _declspec(dllexport)
 
 extern "C" {
-    ExternFunction int AddNumber(int a, int b) {
-        return a + b;
+    ExternFunction int ParseCaffFile(const char* filePath, const char* outputPath) {
+        std::ifstream caff(filePath, std::ifstream::in | std::ifstream::binary);
+        if (!caff.is_open()) {
+            std::cout << "Nem sikerult megnyitni a bemeneti fajlt" << std::endl;
+            return 1;
+        }
+        std::string file_in = filePath;
+        std::string file_out = outputPath;
+
+        int return_code = parseCaffImage(caff, file_in, file_out);
+        caff.close();
+        if (return_code != 0) {
+            std::string meta_file = file_out + ".metadata";
+            std::remove(outputPath);
+            std::remove(meta_file.c_str());
+        }
+        return return_code;
     }
 }
 

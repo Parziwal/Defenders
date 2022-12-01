@@ -3,7 +3,7 @@
 #include "gifanim.h"
 
 void emptyCaffBuffer(char*, int);
-int parseCaffFile(std::ifstream&, std::string&);
+int parseCaffImage(std::ifstream&, std::string&, std::string&);
 int writeGif(std::ifstream&, int, int, GifAnim&, GifWriter&, int);
 int littleEndianToInt(const unsigned char* buffer, int num_of_bytes);
 int bigEndianToInt(const unsigned char* buffer, int num_of_bytes);
