@@ -45,7 +45,7 @@
       "contractResolverType": null,
       "serializerSettingsType": null,
       "useDocumentProvider": true,
-      "documentName": "v1",
+      "documentName": "CaffWepApp",
       "aspNetCoreEnvironment": "Development",
       "createWebHostBuilderMethod": null,
       "startupType": null,
