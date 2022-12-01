@@ -2,3 +2,14 @@
   padding:0.5rem 0.8rem;
   background: lightcyan;
 }
+
+.comment{
+  border: 1px solid rgba(16, 46, 46, 1);
+  background-color: lightcyan;
+  float: left;
+  border-radius: 5px;
+  padding-left: 40px;
+  padding-right: 30px;
+  padding-top: 10px;
+  margin-bottom: 5px;
+}

@@ -20,8 +20,25 @@
   <div>
     <h1>Kommentek</h1>
     <div class="input-group mb-3">
-      <input type="text" class="form-control" placeholder="Komment" aria-label="Recipient's username" aria-describedby="button-addon2">
+      <input type="text" class="form-control" placeholder="Komment" aria-label="Add comment" aria-describedby="button-addon2">
       <button class="btn btn-outline-secondary" type="button" id="button-addon2">Button</button>
+    </div>
+    <div *ngFor="let comment of caff.comments">
+      <div class="comment card col-12">
+        <div class="card-body">
+          <h5 class="card-title">{{comment.createdBy}}</h5>
+          <span>{{comment.createdBy}}</span>
+          <p *ngIf="!editing" class="card-text">{{comment.text}}</p>
+          <div *ngIf="editing" class="input-group mb-3">
+          <input type="text" class="form-control" placeholder="comment" aria-label="update" aria-describedby="button-addon3">
+          <button class="btn btn-outline-secondary" type="button" id="button-addon3" (click)="updateComment()">Mentés</button>
+          </div>
+          <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+            <button class="btn btn-warning me-md-2" type="button" (click)="editComment()">Módosítás</button>
+            <button class="btn btn-danger" type="button">Törlés</button>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </div>

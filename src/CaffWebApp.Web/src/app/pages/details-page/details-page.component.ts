@@ -6,7 +6,7 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./details-page.component.css']
 })
 export class DetailsPageComponent implements OnInit {
-
+  public editing = false;
   constructor() { }
 
   caff =  {
@@ -42,6 +42,14 @@ export class DetailsPageComponent implements OnInit {
   }
 
   ngOnInit(): void {
+  }
+
+  public editComment() {
+    this.editing = !this.editing;
+  }
+
+  public updateComment() {
+    this.editing = false
   }
 
 }
