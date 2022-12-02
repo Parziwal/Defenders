@@ -7,6 +7,8 @@ public class CiffDto
     public int Height { get; set; }
     public List<string> Tags { get; set; }
 
+    public CiffDto() { }
+
     public CiffDto(DAL.Entites.Ciff entity)
     {
         Caption = entity.Caption;

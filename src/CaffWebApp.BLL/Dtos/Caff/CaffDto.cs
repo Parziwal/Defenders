@@ -11,6 +11,8 @@ public class CaffDto
     public ICollection<string> Captions { get; set; }
     public ICollection<string> Tags { get; set; }
 
+    public CaffDto() {}
+
     public CaffDto(DAL.Entites.Caff entity)
     {
         Id = entity.Id;

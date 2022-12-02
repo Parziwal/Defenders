@@ -7,6 +7,8 @@ public class CommentDto
     public string CreatedBy { get; set; }
     public DateTimeOffset CreateAt { get; set; }
 
+    public CommentDto() { }
+
     public CommentDto(DAL.Entites.Comment entity)
     {
         Id = entity.Id;

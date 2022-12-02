@@ -72,6 +72,24 @@ public static class Config
                     JwtClaimTypes.Role,
                     "caffwebapp.api"
                 }
+            },
+            new Client
+            {
+                ClientId = "caff.test.client",
+                ClientName = "Caff Test Client",
+                AllowedGrantTypes = GrantTypes.ResourceOwnerPassword,
+                RequireClientSecret = false,
+                AllowOfflineAccess = true,
+                RedirectUris = { "https://localhost:5001" },
+
+                AllowedScopes = new List<string>
+                {
+                    IdentityServerConstants.StandardScopes.OpenId,
+                    IdentityServerConstants.StandardScopes.Profile,
+                    IdentityServerConstants.StandardScopes.Email,
+                    JwtClaimTypes.Role,
+                    "caffwebapp.api"
+                }
             }
         };
 }
