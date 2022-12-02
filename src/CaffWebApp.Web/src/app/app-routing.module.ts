@@ -33,7 +33,7 @@ const routes: Routes = [
     canActivate: [AuthGuardService]
   },
   {
-    path: 'details',
+    path: 'details/:id',
     component: DetailsPageComponent,
     canActivate: [AuthGuardService]
   },
