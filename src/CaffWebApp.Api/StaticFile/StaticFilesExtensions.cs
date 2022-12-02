@@ -14,8 +14,8 @@ public static class StaticFilesExtensions
 
         app.UseStaticFiles(new StaticFileOptions
         {
-            FileProvider = new PhysicalFileProvider(Path.GetFullPath("images")),
-            RequestPath = "/images/raw",
+            FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "images", "parsed")),
+            RequestPath = "/images",
         });
 
         return app;

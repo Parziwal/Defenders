@@ -26,8 +26,7 @@ public class CaffService : ICaffService
         await _dbContext.CaffImages
                 .Include(caff => caff.CiffImages)
                 .Include(caff => caff.UploadedBy)
-                .Where(caff => !string.IsNullOrEmpty(filter.SearchText) && caff.CreatorName.Contains(filter.SearchText))
-                .Where(caff => !string.IsNullOrEmpty(filter.SearchText) &&
+                .Where(caff => string.IsNullOrEmpty(filter.SearchText) || caff.CreatorName.Contains(filter.SearchText) ||
                     caff.CiffImages.Any(ciff => ciff.Caption.Contains(filter.SearchText) || ciff.Tags.Contains(filter.SearchText)))
                 .Select(caff => new CaffDto(caff))
                 .ToListAsync();
@@ -86,8 +85,7 @@ public class CaffService : ICaffService
 
         var caff = new DAL.Entites.Caff()
         {
-            CreatorName = parsedCaff.CreaterName,
-            AnimationDuration = parsedCaff.AnimationDuration,
+            CreatorName = parsedCaff.CreatorName,
             OriginalFileName = parsedCaff.OriginalFileName,
             StoredFileName = parsedCaff.StoredFileName,
             CreatedAt = parsedCaff.CreatedAt,
@@ -98,6 +96,7 @@ public class CaffService : ICaffService
                 {
                     Caption = ciff.Caption,
                     Tags = ciff.Tags,
+                    Duration = ciff.Duration,
                     Width = ciff.Width,
                     Height = ciff.Height
                 })

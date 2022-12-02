@@ -1,8 +1,10 @@
 #include "CaffWebApp.Parser.hpp"
+#include "gifanim.h"
 #include <iostream>
 #include <iomanip>
 #include <fstream>
 #include <string>
+#include <cmath>
 
 const size_t L_BUFFER = 256;
 
@@ -17,11 +19,11 @@ int main(int argc, char* argv[]) {
         std::cout << "Nem sikerult megnyitni a bemeneti fajlt" << std::endl;
         return 1;
     }
-        
-    int return_code = parseCaffFile(caff, filename);
+    std::string outputFileName = filename + ".gif";
+    int return_code = parseCaffImage(caff, outputFileName);
     caff.close();
     if (return_code == 0)
-        std::cout << std::endl << "A generalt a kepek a beadott CAFF fajl mappajaban talalhatok BMP formatumban." << std::endl;
+        std::cout << std::endl << "A generalt GIF a beadott CAFF fajl mappajaban talalhato." << std::endl;
     return return_code;
 }
 
@@ -30,7 +32,7 @@ void emptyCaffBuffer(char* buffer, int length) {
         buffer[i] = 0;
 }
 
-int parseCaffFile(std::ifstream& caff, std::string& filename) {
+int parseCaffImage(std::ifstream& caff, std::string& outputFileName) {
     auto caffBuffer = new char[L_BUFFER];
 
     emptyCaffBuffer(caffBuffer, L_BUFFER);
@@ -53,7 +55,7 @@ int parseCaffFile(std::ifstream& caff, std::string& filename) {
     int (*endianConverter)(const unsigned char*, int);
     if (block_size_little_endian == 20)
         endianConverter = &littleEndianToInt;
-    else if (block_size_big_endian == 20) 
+    else if (block_size_big_endian == 20)
         endianConverter = &bigEndianToInt;
     else {
         std::cout << "Rossz header" << std::endl;
@@ -82,6 +84,11 @@ int parseCaffFile(std::ifstream& caff, std::string& filename) {
     }
     /// num_anim (for annual GIF conversion in the future)
     int num_anim = (*endianConverter)((const unsigned char*)(&caffBuffer[12]), 8);
+
+    std::string outputMetaDataFileName = outputFileName + ".metadata";
+    std::ofstream meta_out(outputMetaDataFileName.c_str(), std::ofstream::out);
+
+    meta_out << num_anim << std::endl;
 
     /// NEW BLOCK!!!
     emptyCaffBuffer(caffBuffer, L_BUFFER);
@@ -124,19 +131,29 @@ int parseCaffFile(std::ifstream& caff, std::string& filename) {
     for (int i = 0; i < creator_length; i++)
         creator[i] = caffBuffer[14 + i];
     creator[creator_length] = '\0';
-    
+
 
     int jump_to = 9 + 20 + 9 + credits_header_size;
     std::cout << "Meta adatok" << std::endl;
-    std::cout << "CAFF keszitesi ideje: " 
-        << year << '.' 
-        << std::setfill('0') << std::setw(2) << month << '.' 
-        << std::setfill('0') << std::setw(2) << day << ". " 
-        << std::setfill('0') << std::setw(2) << hour << ':' 
+    std::cout << "CAFF keszitesi ideje: "
+        << year << '.'
+        << std::setfill('0') << std::setw(2) << month << '.'
+        << std::setfill('0') << std::setw(2) << day << ". "
+        << std::setfill('0') << std::setw(2) << hour << ':'
         << std::setfill('0') << std::setw(2) << minute << std::endl;
     std::cout << "Kepek keszitoje: " << creator << std::endl;
     std::cout << "CIFF kepek szama a fajlban: " << num_anim << std::endl;
+
+    meta_out << year << '-'
+        << std::setfill('0') << std::setw(2) << month << '-'
+        << std::setfill('0') << std::setw(2) << day << " "
+        << std::setfill('0') << std::setw(2) << hour << ':'
+        << std::setfill('0') << std::setw(2) << minute << std::endl;
+    meta_out << creator << std::endl;
     delete[] creator;
+
+    GifAnim gifAnim;
+    GifWriter gifWriter;
 
     for (int i = 0; i < num_anim; ++i) {
         /// NEW BLOCK
@@ -200,6 +217,8 @@ int parseCaffFile(std::ifstream& caff, std::string& filename) {
             std::cout << "Rossz kep meret informacio a CIFF headerben" << std::endl;
             return 1;
         }
+        if (i == 0)
+            gifAnim.GifBegin(&gifWriter, outputFileName.c_str(), ciff_width, ciff_height, duration, num_anim, 8, false);
 
         emptyCaffBuffer(caffBuffer, L_BUFFER);
         int capt_size = ciff_header_size - 36;
@@ -214,7 +233,7 @@ int parseCaffFile(std::ifstream& caff, std::string& filename) {
             std::cout << "A tagek nem jo karakterre vegzodnek" << std::endl;
             return 1;
         }
-        
+
         size_t pos = caption.find('\n');
         if (pos == std::string::npos) {
             std::cout << "Nem talalhato a caption-t lezaro karakter" << std::endl;
@@ -223,9 +242,12 @@ int parseCaffFile(std::ifstream& caff, std::string& filename) {
 
         std::cout << std::endl << (i + 1) << ". CIFF metaadatai" << std::endl;
         std::cout << "Kep merete: " << ciff_width << "x" << ciff_height << " px" << std::endl;
+        meta_out << ciff_width << "x" << ciff_height << std::endl;
         std::cout << "Animacio hossza: " << duration << " ms" << std::endl;
-                
+        meta_out << duration << std::endl;
+
         std::cout << "Kep felirata: " << caption.substr(0, pos) << std::endl;
+        meta_out << caption.substr(0, pos) << std::endl;
         caption.erase(0, pos + 1);
         pos = caption.find('\0');
         if (pos == std::string::npos) {
@@ -235,118 +257,54 @@ int parseCaffFile(std::ifstream& caff, std::string& filename) {
         std::cout << "Tagek: ";
         while (pos != std::string::npos) {
             std::cout << caption.substr(0, pos);
+            meta_out << caption.substr(0, pos);
             caption.erase(0, pos + 1);
             pos = caption.find('\0');
-            if (pos != std::string::npos)
+            if (pos != std::string::npos) {
                 std::cout << ", ";
+                meta_out << ",";
+            }
         }
         std::cout << std::endl;
+        meta_out << std::endl;
 
-        if (writeBmpFile(caff, ciff_width, ciff_height, filename, i + 1) != 0)
+        if (writeGif(caff, ciff_width, ciff_height, gifAnim, gifWriter, duration) != 0) {
+            gifAnim.GifEnd(&gifWriter);
+            std::remove(outputFileName.c_str());
             return 1;
+        }
     }
     delete[] caffBuffer;
+    gifAnim.GifEnd(&gifWriter);
     return 0;
 }
 
-int writeBmpFile(std::ifstream& caff, int width, int height, std::string& f_name, int count) {
-    /// CREATE and WRITE bmp file
-    size_t lastindex = f_name.find_last_of(".");
-    std::string name_without_ext;
-    if (lastindex == std::string::npos)
-        name_without_ext = f_name;
-    else
-        name_without_ext = f_name.substr(0, lastindex);
-    std::string filename = name_without_ext + "_" + std::to_string(count) + ".bmp";
-    std::ofstream out(filename.c_str(), std::ofstream::out | std::ios_base::binary);
+int writeGif(std::ifstream& caff, int width, int height, GifAnim& anim, GifWriter& writer, int duration) {
+    int in_window_size = width * 3;
+    int out_content_size = width * height * 4;
+    int out_window_size = width * 4;
+    auto image = new uint8_t[out_content_size];
+    auto window = new char[in_window_size];
+    emptyCaffBuffer(window, in_window_size);
 
-    if (!out.is_open()) {
-        std::cout << "Nem sikerult megnyitni a kimeneti fajlt" << std::endl;
-        return 1;
-    }
-    writeBmpFileHeader(out, width, height);
-    writeBmpFileInfoHeader(out, width, height);
-    int success = writeBmpFilePixels(caff, width, height, out);
-    out.close();
-    if (success != 0)
-        for (int i = 0; i < count; i++)
-            std::remove((f_name + "_" + std::to_string(i + 1) + ".bmp").c_str());
-    return success;
-}
-
-int writeBmpFileHeader(std::ofstream& out, int width, int height) {
-    /// BMP HEADER
-    // calculate bmp file size in bytes
-    int bmp_length = width * height * 3 + 54;
-
-    char bmp_header[14];
-    emptyCaffBuffer(bmp_header, 14);
-    bmp_header[0] = 'B'; bmp_header[1] = 'M';
-    bmp_header[2] = bmp_length | 0x00;
-    bmp_header[3] = bmp_length >> 8 | 0x00;
-    bmp_header[4] = bmp_length >> 16 | 0x00;
-    bmp_header[5] = bmp_length >> 24 | 0x00;
-    bmp_header[10] = 54;
-    bmp_header[11] = bmp_header[12] = bmp_header[13] = 0;
-    out.write(bmp_header, sizeof(bmp_header));
-    return 0;
-}
-
-int writeBmpFileInfoHeader(std::ofstream& out, int width, int height) {
-    int content_size = width * height * 3;
-
-    char info_header[40];
-    emptyCaffBuffer(info_header, 40);
-    info_header[0] = 40;
-    info_header[1] = info_header[2] = info_header[3] = 0;
-    // width
-    info_header[4] = width | 0x00;
-    info_header[5] = width >> 8 | 0x00;
-    info_header[6] = width >> 16 | 0x00;
-    info_header[7] = width >> 24 | 0x00;
-    // height
-    info_header[8] = height | 0x00;
-    info_header[9] = height >> 8 | 0x00;
-    info_header[10] = height >> 16 | 0x00;
-    info_header[11] = height >> 24 | 0x00;
-    // planes (???)
-    info_header[12] = 1;
-    // bits per pixel
-    info_header[14] = 24;
-    // image size
-    info_header[20] = content_size | 0x00;
-    info_header[21] = content_size >> 8 | 0x00;
-    info_header[22] = content_size >> 16 | 0x00;
-    info_header[23] = content_size >> 24 | 0x00;
-
-    out.write(info_header, sizeof(info_header));
-    return 0;
-}
-
-int writeBmpFilePixels(std::ifstream& caff, int width, int height, std::ofstream& out) {
-    /// BMP PIXEL information
-    int content_size = width * height * 3;
-    int window_size = width * 3;
-    auto bmp_pixel_buffer = new char[window_size];
-    caff.seekg(content_size - window_size, std::ios_base::cur);
     for (int i = 0; i < height; ++i) {
-        emptyCaffBuffer(bmp_pixel_buffer, window_size);
-        caff.read(bmp_pixel_buffer, window_size);
-        if (caff.gcount() != window_size) {
+        caff.read(window, in_window_size);
+        if (caff.gcount() != in_window_size) {
             std::cout << "Tul rovid a fajl" << std::endl;
             return 1;
         }
-        for (int j = 0; j < window_size; j += 3) {
-            char temp = bmp_pixel_buffer[j];
-            bmp_pixel_buffer[j] = bmp_pixel_buffer[j + 2];
-            bmp_pixel_buffer[j + 2] = temp;
-        }
-        out.write(bmp_pixel_buffer, window_size);
-        if (i + 1 != height) {
-            caff.seekg(-2 * window_size, std::ios_base::cur);
+        for (int j = 0; j < width; ++j) {
+            image[i * out_window_size + j * 4 + 0] = window[j * 3 + 0];
+            image[i * out_window_size + j * 4 + 1] = window[j * 3 + 1];
+            image[i * out_window_size + j * 4 + 2] = window[j * 3 + 2];
+            image[i * out_window_size + j * 4 + 3] = 255;
         }
     }
-    delete[] bmp_pixel_buffer;
+
+    anim.GifWriteFrame(&writer, image, width, height, duration);
+
+    delete[] window;
+    delete[] image;
     return 0;
 }
 
@@ -369,8 +327,23 @@ int bigEndianToInt(const unsigned char* buffer, int num_of_bytes) {
 #define ExternFunction _declspec(dllexport)
 
 extern "C" {
-    ExternFunction int AddNumber(int a, int b) {
-        return a + b;
+    ExternFunction int ParseCaffFile(const char* filePath, const char* outputPath) {
+        std::ifstream caff(filePath, std::ifstream::in | std::ifstream::binary);
+        if (!caff.is_open()) {
+            std::cout << "Nem sikerult megnyitni a bemeneti fajlt" << std::endl;
+            return 1;
+        }
+        std::string file_in = filePath;
+        std::string file_out = outputPath;
+
+        int return_code = parseCaffImage(caff, file_out);
+        caff.close();
+        if (return_code != 0) {
+            std::string meta_file = file_out + ".metadata";
+            std::remove(outputPath);
+            std::remove(meta_file.c_str());
+        }
+        return return_code;
     }
 }
 

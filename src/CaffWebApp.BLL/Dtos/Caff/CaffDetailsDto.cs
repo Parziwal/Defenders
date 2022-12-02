@@ -7,7 +7,6 @@ public class CaffDetailsDto
 {
     public int Id { get; set; }
     public string CreatorName { get; set; }
-    public int AnimationDuration { get; set; }
     public string FileName { get; set; }
     public DateTimeOffset CreatedAt { get; set; }
     public UserDto UploadedBy { get; set; }
@@ -20,7 +19,6 @@ public class CaffDetailsDto
         Id = entity.Id;
         FileName = entity.StoredFileName;
         CreatorName = entity.CreatorName;
-        AnimationDuration = entity.AnimationDuration;
         CreatedAt = entity.CreatedAt;
         UploadedBy = new UserDto(entity.UploadedBy);
         UploadedAt = entity.UploadedAt;
