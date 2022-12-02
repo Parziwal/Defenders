@@ -68,6 +68,10 @@ public class UserControllerTests : WebServerFixture
         DbContext.Add(user);
         await DbContext.SaveChangesAsync();
 
+        var role = await DbContext.Roles.SingleAsync(role => role.Name == "Default");
+        DbContext.UserRoles.Add(new IdentityUserRole<string>() { RoleId = role.Id, UserId = user.Id });
+        await DbContext.SaveChangesAsync();
+
         var accessToken = await apiServer.GetAccessToken("admin@email.hu", "Test.54321");
         var client = apiServer.CreateClient();
         client.SetBearerToken(accessToken);

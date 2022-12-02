@@ -37,7 +37,7 @@ public class CaffControllerTests : WebServerFixture
         Assert.Equal(HttpStatusCode.OK, caffListResponse.StatusCode);
         Assert.Equal(2, result!.Count);
         Assert.Equal(sampleCaff1.CreatorName, result[0].CreatorName);
-        Assert.Equal(sampleCaff1.StoredFileName, result[0].FileName);
+        Assert.Equal(sampleCaff1.OriginalFileName, result[0].FileName);
         Assert.Equal(sampleCaff1.UploadedAt, result[0].UploadedAt);
         Assert.Equal(sampleCaff1.UploadedBy.Fullname, result[0].UploadedBy);
         Assert.Equal(sampleCaff1.CiffImages.Select(ciff => ciff.Caption).ToHashSet(), result[0].Captions);

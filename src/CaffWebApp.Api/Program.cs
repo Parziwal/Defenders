@@ -10,6 +10,7 @@ using Hellang.Middleware.ProblemDetails;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 
+namespace CaffWebApp.Api;
 public class Program
 {
     public static void Main(string[] args)
