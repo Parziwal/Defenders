@@ -1,5 +1,4 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
 import { LogoutCallbackComponent } from './auth/logout-callback.component';
 import { HomeComponent } from './pages/home/home.component';
@@ -7,6 +6,7 @@ import { LoginCallbackComponent } from './auth/login-callback.component';
 import {AdminPageComponent} from "./pages/admin-page/admin-page.component";
 import {DetailsPageComponent} from "./pages/details-page/details-page.component";
 import {ListPageComponent} from "./pages/list-page/list-page.component";
+import {AuthGuardService} from "./auth/auth-guard.service";
 
 
 const routes: Routes = [
@@ -30,14 +30,17 @@ const routes: Routes = [
   {
     path: 'admin',
     component: AdminPageComponent,
+    canActivate: [AuthGuardService]
   },
   {
     path: 'details',
     component: DetailsPageComponent,
+    canActivate: [AuthGuardService]
   },
   {
     path: 'list',
     component: ListPageComponent,
+    canActivate: [AuthGuardService]
   },
 ];
 @NgModule({
