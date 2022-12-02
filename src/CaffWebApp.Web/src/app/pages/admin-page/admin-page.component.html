@@ -4,6 +4,6 @@
       <span class="fs-3">{{ user.fullName }}</span>
       <span class="fs-5">{{ user.email }}</span>
     </div>
-    <div><button class="btn btn-danger fs-5">Törlés</button></div>
+    <div><button class="btn btn-danger fs-5" (click)="deleteUser(user.id)">Törlés</button></div>
   </div>
 </div>

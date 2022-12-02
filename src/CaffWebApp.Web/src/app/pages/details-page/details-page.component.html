@@ -1,44 +1,32 @@
 <div style="max-width: 1280px;">
   <div class="d-flex justify-content-between">
       <div class="details-container">
-        <h1 class="bg-primary bg-opacity-10">{{caff.fileName}}</h1>
+        <h1 class="bg-primary bg-opacity-10">{{caff?.fileName}}</h1>
         <hr>
-        <div>Készítette: {{caff.creatorName}}</div>
-        <div class="bg-primary bg-opacity-10">Készült: {{caff.createdAt | date: 'long'}}</div>
+        <div>Készítette: {{caff?.creatorName}}</div>
+        <div class="bg-primary bg-opacity-10">Készült: {{caff?.createdAt | date: 'long'}}</div>
         <div>Címekék:</div>
-        <div class="bg-primary bg-opacity-10">Felirat: {{caff.ciffImages[0].caption}}</div>
-        <div>Készült: {{caff.createdAt | date: 'long'}}</div>
-        <div class="bg-primary bg-opacity-10">Feltöltő neve: {{caff.uploadedBy.fullName}}</div>
-        <div>Feltöltő email címe: {{caff.uploadedBy.email}}</div>
-        <div class="bg-primary bg-opacity-10">Feltöltés dátuma:{{caff.uploadedAt| date: 'long'}}</div>
+        <div class="bg-primary bg-opacity-10">Felirat: {{caff?.ciffImages![0].caption}}</div>
+        <div>Készült: {{caff?.createdAt | date: 'long'}}</div>
+        <div class="bg-primary bg-opacity-10">Feltöltő neve: {{caff?.uploadedBy?.fullName}}</div>
+        <div>Feltöltő email címe: {{caff?.uploadedBy?.email}}</div>
+        <div class="bg-primary bg-opacity-10">Feltöltés dátuma:{{caff?.uploadedAt| date: 'long'}}</div>
       </div>
     <div>
       <img src="assets/logo.svg" style="max-width: 500px;" alt="...">
-          <button class="btn btn-sm btn-outline-primary w-100 mt-5">Letöltés</button>
+          <button class="btn btn-sm btn-outline-primary w-100 mt-5" (click)="downloadFile()">Letöltés</button>
     </div>
   </div>
   <div>
     <h1>Kommentek</h1>
     <div class="input-group mb-3">
-      <input type="text" class="form-control" placeholder="Komment" aria-label="Add comment" aria-describedby="button-addon2">
-      <button class="btn btn-outline-secondary" type="button" id="button-addon2">Button</button>
+      <input type="text" class="form-control" placeholder="Komment" aria-label="Új komment"[(ngModel)]="commentText"
+             aria-describedby="button-addon2">
+      <button class="btn btn-outline-secondary" type="button" id="button-addon2" (click)="addNewComment()">Button</button>
     </div>
-    <div *ngFor="let comment of caff.comments">
-      <div class="comment card col-12">
-        <div class="card-body">
-          <h5 class="card-title">{{comment.createdBy}}</h5>
-          <span>{{comment.createdBy}}</span>
-          <p *ngIf="!editing" class="card-text">{{comment.text}}</p>
-          <div *ngIf="editing" class="input-group mb-3">
-          <input type="text" class="form-control" placeholder="comment" aria-label="update" aria-describedby="button-addon3">
-          <button class="btn btn-outline-secondary" type="button" id="button-addon3" (click)="updateComment()">Mentés</button>
-          </div>
-          <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-            <button class="btn btn-warning me-md-2" type="button" (click)="editComment()">Módosítás</button>
-            <button class="btn btn-danger" type="button">Törlés</button>
-          </div>
-        </div>
-      </div>
+    <div *ngFor="let comment of caff?.comments">
+      <app-comment [comment]="comment" (commentDeleted)="deleteComment(comment!.id!)">
+      </app-comment>
     </div>
   </div>
 </div>

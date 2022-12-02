@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { UserClient } from "../../api/api.generated";
+import {UserClient, UserDto} from "../../api/api.generated";
 
 @Component({
   selector: 'app-admin-page',
@@ -9,21 +9,18 @@ import { UserClient } from "../../api/api.generated";
 export class AdminPageComponent implements OnInit {
 
   constructor(private readonly _service: UserClient) { }
-
-  users = [
-    {
-      "id": "1",
-      "fullName": "Kis Károly",
-      "email": "kis.karcsi@gmail.com"
-    },
-    {
-      "id": "2",
-      "fullName": "Nagy Károly",
-      "email": "nagy.karcsi@gmail.com"
-    }
-  ]
+  public users: UserDto[] = [];
 
   ngOnInit(): void {
+    this._service.listAllUsers().subscribe((resp) => {
+      this.users = resp;
+    });
+  }
+
+  public deleteUser(userId?: string) {
+    this._service.deleteUser(userId!).subscribe(() => {
+        this.users = this.users.filter(x => x.id !== userId);
+    });
   }
 
 }

@@ -11,6 +11,7 @@ import { AuthModule } from './auth/auth.module';
 import { AdminPageComponent } from './pages/admin-page/admin-page.component';
 import { DetailsPageComponent } from './pages/details-page/details-page.component';
 import { ListPageComponent } from './pages/list-page/list-page.component';
+import { CommentComponent } from './pages/details-page/comment/comment.component';
 
 @NgModule({
   declarations: [
@@ -18,7 +19,8 @@ import { ListPageComponent } from './pages/list-page/list-page.component';
     HomeComponent,
     AdminPageComponent,
     DetailsPageComponent,
-    ListPageComponent
+    ListPageComponent,
+    CommentComponent
     
   ],
   imports: [

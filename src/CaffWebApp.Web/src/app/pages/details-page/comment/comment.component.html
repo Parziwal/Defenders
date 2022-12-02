@@ -1,0 +1,16 @@
+<div class="comment card col-12">
+  <div class="card-body">
+    <h5 class="card-title">{{comment?.createdBy}}</h5>
+    <span>{{comment?.createdBy}}</span>
+    <p *ngIf="!editing" class="card-text">{{comment?.text}}</p>
+    <div *ngIf="editing" class="input-group mb-3">
+      <input type="text" [(ngModel)]="commentText" class="form-control" placeholder="comment" aria-label="update" aria-describedby="button-addon3">
+      <button class="btn btn-outline-secondary" type="button" id="button-addon3"
+              (click)="updateComment(comment!.id!)">Mentés</button>
+    </div>
+    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+      <button class="btn btn-warning me-md-2" type="button" (click)="editComment()">Módosítás</button>
+      <button class="btn btn-danger" type="button" (click)="deleteComment(comment!.id!)">Törlés</button>
+    </div>
+  </div>
+</div>

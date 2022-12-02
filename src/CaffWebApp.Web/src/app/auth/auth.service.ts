@@ -1,5 +1,5 @@
 import { Injectable, OnInit } from '@angular/core';
-import { UserManager, UserManagerSettings, User } from 'oidc-client-ts';
+import { UserManager, User } from 'oidc-client-ts';
 import { environment } from 'src/environments/environment';
 
 
@@ -12,7 +12,6 @@ export class AuthService implements OnInit {
   private user?: User | null;
 
   constructor() {
-    const settings = environment.authSettings as any;
     this.manager = new UserManager(environment.authSettings)
   }
 

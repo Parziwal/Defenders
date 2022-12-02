@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import {CaffClient, CommentClient} from "../../api/api.generated";
+import {CaffClient, CaffDetailsDto, CommentClient} from "../../api/api.generated";
+import {ActivatedRoute} from "@angular/router";
 
 @Component({
   selector: 'app-details-page',
@@ -7,51 +8,47 @@ import {CaffClient, CommentClient} from "../../api/api.generated";
   styleUrls: ['./details-page.component.css']
 })
 export class DetailsPageComponent implements OnInit {
-  public editing = false;
-  constructor(private readonly _caffService: CaffClient,
-              private readonly _commentService: CommentClient) { }
+  private readonly _id: string | null;
+  private readonly _caffId: number;
+  public caff?: CaffDetailsDto;
+  public commentText?: string;
 
-  caff =  {
-    "id": 0,
-    "creatorName": "string",
-    "animationDuration": 0,
-    "fileName": "string",
-    "createdAt": "2022-11-30T20:27:04.040Z",
-    "uploadedBy": {
-      "id": "string",
-      "fullName": "string",
-      "email": "string"
-    },
-    "uploadedAt": "2022-11-30T20:27:04.040Z",
-    "ciffImages": [
-      {
-        "caption": "string",
-        "width": 0,
-        "height": 0,
-        "tags": [
-          "string"
-        ]
-      }
-    ],
-    "comments": [
-      {
-        "id": 0,
-        "text": "string",
-        "createdBy": "string",
-        "createAt": "2022-11-30T20:27:04.040Z"
-      }
-    ]
+  constructor(private readonly _caffService: CaffClient,
+              private _route: ActivatedRoute,
+              private readonly _commentService: CommentClient) {
+    this._id = this._route.snapshot.paramMap.get('id');
+    this._caffId = Number(this._id);
+
   }
 
   ngOnInit(): void {
+    this._caffService.getCaffDetails(Number(this._id)).subscribe(response => {
+      this.caff = response;
+    });
   }
 
-  public editComment() {
-    this.editing = !this.editing;
+  public addNewComment() {
+   // this._commentService.addCommentToCaff(this._caffId, {commentText: commentText}).subscribe()
   }
 
-  public updateComment() {
-    this.editing = false
+  public deleteComment(commentId: number) {
+    this._commentService.deleteComment(commentId).subscribe(() => {
+        this.caff!.comments = this.caff?.comments?.filter(x => x.id !== commentId);
+      }
+    );
+  }
+
+  public downloadFile() {
+    this._caffService.downloadCaffFile(this._caffId).subscribe((response) => {
+      let filename: string = `${this._caffId}.caff`;
+      let binaryData = [];
+      binaryData.push(response.data);
+      let downloadLink = document.createElement('a');
+      downloadLink.href = window.URL.createObjectURL(new Blob(binaryData, { type: 'blob' }));
+      downloadLink.setAttribute('download', filename);
+      document.body.appendChild(downloadLink);
+      downloadLink.click();
+    })
   }
 
 }
