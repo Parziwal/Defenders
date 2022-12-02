@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace CaffWebApp.Api.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class CaffController : ControllerBase

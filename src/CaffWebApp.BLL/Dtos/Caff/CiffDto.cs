@@ -2,11 +2,11 @@
 
 public class CiffDto
 {
-    public string Caption { get; set; }
+    public string Caption { get; set; } = default!;
     public int Width { get; set; }
     public int Height { get; set; }
     public int Duration { get; set; }
-    public List<string> Tags { get; set; }
+    public List<string> Tags { get; set; } = default!;
 
     public CiffDto() { }
 

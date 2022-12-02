@@ -22,7 +22,6 @@ public class TestHelper
         new Caff()
         {
             CreatorName = "Carson Alexander",
-            AnimationDuration = 1000,
             OriginalFileName = "TestCaffFile",
             StoredFileName = "475c5j45-049c-4d7b-a222-02ebdc22b22r",
             CreatedAt = DateTimeOffset.Now,
@@ -39,7 +38,8 @@ public class TestHelper
             Caption = "TestCaption",
             Width = 2000,
             Height = 1000,
-            Tags = "Test1,Test2,Test3"
+            Tags = "Test1,Test2,Test3",
+            Duration = 1000,
         };
 
     public static Comment CreateComment() =>

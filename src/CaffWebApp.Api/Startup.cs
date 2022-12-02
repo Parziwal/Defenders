@@ -64,7 +64,8 @@ namespace CaffWebApp.Api
                 endpoints.MapRazorPages();
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller}/{action=Index}/{id?}");
+                    pattern: "{controller}/{action=Index}/{id?}")
+                .RequireAuthorization(AuthenticationExtensions.DefaultApiPolicy);
             });
         }
     }

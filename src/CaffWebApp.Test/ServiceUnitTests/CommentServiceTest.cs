@@ -35,7 +35,7 @@ public class CommentServiceTest : SqliteInMemoryDb
             var httpContext = new Mock<IHttpContextAccessor>();
             var commentService = new CommentService(dbContext, httpContext.Object);
 
-            httpContext.SetupGet(h => h.HttpContext.User)
+            httpContext.SetupGet(h => h.HttpContext!.User)
                 .Returns(TestHelper.GetUserClaimPrinciple(sampleCaff.UploadedBy.Id));
 
             //Act

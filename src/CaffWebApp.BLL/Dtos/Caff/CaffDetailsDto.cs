@@ -6,9 +6,9 @@ namespace CaffWebApp.BLL.Dtos.Caff;
 public class CaffDetailsDto
 {
     public int Id { get; set; }
-    public string CreatorName { get; set; }
-    public string FileName { get; set; }
-    public string FileUri { get; set; }
+    public string CreatorName { get; set; } = default!;
+    public string FileName { get; set; } = default!;
+    public string FileUri { get; set; } = default!;
     public DateTimeOffset CreatedAt { get; set; }
     public UserDto UploadedBy { get; set; } = default!;
     public DateTimeOffset UploadedAt { get; set; }

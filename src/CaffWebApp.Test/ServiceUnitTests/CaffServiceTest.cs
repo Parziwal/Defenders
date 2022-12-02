@@ -35,7 +35,8 @@ public class CaffServiceTest : SqliteInMemoryDb
             //Assert
             Assert.Equal(2, result.Count);
             Assert.Equal(sampleCaff1.CreatorName, result[0].CreatorName);
-            Assert.Equal(sampleCaff1.StoredFileName, result[0].FileName);
+            Assert.Equal(sampleCaff1.OriginalFileName, result[0].FileName);
+            Assert.Equal(sampleCaff1.StoredFileName + ".gif", result[0].FileUri);
             Assert.Equal(sampleCaff1.UploadedAt, result[0].UploadedAt);
             Assert.Equal(sampleCaff1.UploadedBy.Fullname, result[0].UploadedBy);
             Assert.Equal(sampleCaff1.CiffImages.Select(ciff => ciff.Caption).ToHashSet(), result[0].Captions);
@@ -93,8 +94,8 @@ public class CaffServiceTest : SqliteInMemoryDb
 
             //Assert
             Assert.Equal(sampleCaff.CreatorName, result.CreatorName);
-            Assert.Equal(sampleCaff.StoredFileName, result.FileName);
-            Assert.Equal(sampleCaff.AnimationDuration, result.AnimationDuration);
+            Assert.Equal(sampleCaff.OriginalFileName, result.FileName);
+            Assert.Equal(sampleCaff.StoredFileName + ".gif", result.FileUri);
             Assert.Equal(sampleCaff.CreatedAt, result.CreatedAt);
             Assert.Equal(sampleCaff.UploadedAt, result.UploadedAt);
             Assert.Equal(sampleCaff.UploadedBy.Email, result.UploadedBy.Email);
@@ -109,10 +110,6 @@ public class CaffServiceTest : SqliteInMemoryDb
         using (var dbContext = CreateDbContext())
         {
             //Arrange
-            var sampleCaff = TestHelper.CreateCaff();
-            dbContext.CaffImages.AddRange(sampleCaff);
-            await dbContext.SaveChangesAsync();
-
             var parserService = new Mock<IParserService>();
             var httpContext = new Mock<IHttpContextAccessor>();
             var caffService = new CaffService(dbContext, parserService.Object, httpContext.Object);
@@ -194,8 +191,8 @@ public class CaffServiceTest : SqliteInMemoryDb
             var result = await caffService.DownloadCaff(sampleCaff.Id);
 
             //Assert
-            Assert.Equal(result.FileName, sampleCaff.OriginalFileName);
-            Assert.Equal(result.Content, new byte[] { 0 });
+            Assert.Equal(sampleCaff.OriginalFileName, result.FileName);
+            Assert.Equal(new byte[] { 0 }, result.Content);
             Assert.Equal(MediaTypeNames.Application.Octet, result.MimeType);
         }
     }
@@ -206,16 +203,9 @@ public class CaffServiceTest : SqliteInMemoryDb
         using (var dbContext = CreateDbContext())
         {
             //Arrange
-            var sampleCaff = TestHelper.CreateCaff();
-            dbContext.CaffImages.AddRange(sampleCaff);
-            await dbContext.SaveChangesAsync();
-
             var parserService = new Mock<IParserService>();
             var httpContext = new Mock<IHttpContextAccessor>();
             var caffService = new CaffService(dbContext, parserService.Object, httpContext.Object);
-
-            parserService.Setup(p => p.GetCaffFileContent(sampleCaff.StoredFileName))
-                .ReturnsAsync(new byte[] { 0 });
 
             //Act
 
@@ -227,7 +217,7 @@ public class CaffServiceTest : SqliteInMemoryDb
     }
 
     [Fact]
-    public async void UploadCaff_Existing()
+    public async void UploadCaff()
     {
         using (var dbContext = CreateDbContext())
         {
@@ -239,15 +229,15 @@ public class CaffServiceTest : SqliteInMemoryDb
             {
                 StoredFileName = "StoredName",
                 OriginalFileName = "OriginalName",
-                CreaterName = "CreatorName",
+                CreatorName = "CreatorName",
                 CreatedAt = DateTimeOffset.Now,
-                AnimationDuration = 10,
                 CiffData = new List<CiffParsedDto>() {
                     new CiffParsedDto() {
                         Caption = "TestCaption",
                         Width = 2000,
                         Height = 1000,
-                        Tags = "Test1,Test2,Test3"
+                        Tags = "Test1,Test2,Test3",
+                        Duration = 1000,
                     },
                 }
             };
@@ -259,22 +249,23 @@ public class CaffServiceTest : SqliteInMemoryDb
             parserService.Setup(p => p.ParseCaffFile(It.IsAny<AddCaffDto>()))
                 .ReturnsAsync(parsedCaff);
 
-            httpContext.SetupGet(h => h.HttpContext.User)
+            httpContext.SetupGet(h => h.HttpContext!.User)
                 .Returns(TestHelper.GetUserClaimPrinciple(user.Id));
 
             //Act
             var result = await caffService.UploadCaffFile(new AddCaffDto());
 
             //Assert
-            Assert.Equal(result.FileName, parsedCaff.StoredFileName);
-            Assert.Equal(result.CreatorName, parsedCaff.CreaterName);
-            Assert.Equal(result.CreatedAt, parsedCaff.CreatedAt);
-            Assert.Equal(result.AnimationDuration, parsedCaff.AnimationDuration);
-            Assert.Equal(result.UploadedBy.Email, user.Email);
-            Assert.Equal(result.CiffImages.First().Caption, parsedCaff.CiffData.First().Caption);
-            Assert.Equal(result.CiffImages.First().Width, parsedCaff.CiffData.First().Width);
-            Assert.Equal(result.CiffImages.First().Height, parsedCaff.CiffData.First().Height);
-            Assert.Equal(string.Join(',', result.CiffImages.First().Tags), parsedCaff.CiffData.First().Tags);
+            Assert.Equal(parsedCaff.OriginalFileName, result.FileName);
+            Assert.Equal(parsedCaff.StoredFileName + ".gif", result.FileUri);
+            Assert.Equal(parsedCaff.CreatorName, result.CreatorName);
+            Assert.Equal(parsedCaff.CreatedAt, result.CreatedAt);
+            Assert.Equal(user.Email, result.UploadedBy.Email);
+            Assert.Equal(parsedCaff.CiffData.First().Caption, result.CiffImages.First().Caption);
+            Assert.Equal(parsedCaff.CiffData.First().Width, result.CiffImages.First().Width);
+            Assert.Equal(parsedCaff.CiffData.First().Height, result.CiffImages.First().Height);
+            Assert.Equal(parsedCaff.CiffData.First().Duration, result.CiffImages.First().Duration);
+            Assert.Equal(parsedCaff.CiffData.First().Tags, string.Join(',', result.CiffImages.First().Tags));
         }
     }
 }

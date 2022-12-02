@@ -30,8 +30,8 @@ public static class AuthenticationExtensions
 
             options.AddPolicy(UserRoles.Admin, policy =>
             {
-                
                 policy.RequireClaim(ClaimTypes.Role, UserRoles.Admin);
+                policy.AuthenticationSchemes = new[] { JwtBearerDefaults.AuthenticationScheme };
             });
 
             options.DefaultPolicy = options.GetPolicy(DefaultApiPolicy)!;

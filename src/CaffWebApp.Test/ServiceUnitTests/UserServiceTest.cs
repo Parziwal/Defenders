@@ -30,7 +30,7 @@ public class UserServiceTest : SqliteInMemoryDb
             var userManger = new Mock<UserManager<ApplicationUser>>(store.Object, null, null, null, null, null, null, null, null);
             var userService = new UserService(userManger.Object, httpContext.Object);
 
-            httpContext.SetupGet(h => h.HttpContext.User)
+            httpContext.SetupGet(h => h.HttpContext!.User)
                 .Returns(TestHelper.GetUserClaimPrinciple(""));
 
             userManger.Setup(u => u.FindByIdAsync(user.Id))
@@ -61,7 +61,7 @@ public class UserServiceTest : SqliteInMemoryDb
             var userManger = new Mock<UserManager<ApplicationUser>>(store.Object, null, null, null, null, null, null, null, null);
             var userService = new UserService(userManger.Object, httpContext.Object);
 
-            httpContext.SetupGet(h => h.HttpContext.User)
+            httpContext.SetupGet(h => h.HttpContext!.User)
                 .Returns(TestHelper.GetUserClaimPrinciple(""));
 
             userManger.Setup(u => u.FindByIdAsync(user.Id))
@@ -90,7 +90,7 @@ public class UserServiceTest : SqliteInMemoryDb
             var userManger = new Mock<UserManager<ApplicationUser>>(store.Object, null, null, null, null, null, null, null, null);
             var userService = new UserService(userManger.Object, httpContext.Object);
 
-            httpContext.SetupGet(h => h.HttpContext.User)
+            httpContext.SetupGet(h => h.HttpContext!.User)
                 .Returns(TestHelper.GetUserClaimPrinciple(""));
 
             userManger.Setup(u => u.GetUsersInRoleAsync(UserRoles.Default))
