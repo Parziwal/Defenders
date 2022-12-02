@@ -52,7 +52,7 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         shell: powershell
         run: |
-          .\.sonar\scanner\dotnet-sonarscanner begin /k:"Parziwal_Defenders" /o:"parziwal" /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.cs.opencover.reportsPaths="TestResults/**/coverage.opencover.xml"
+          .\.sonar\scanner\dotnet-sonarscanner begin /k:"Parziwal_Defenders" /o:"parziwal" /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.cs.xunit.reportsPaths="**/coverage.cobertura.xml"
           dotnet build .\src\CaffWebApp.Api\CaffWebApp.Api.csproj
           dotnet test .\src\CaffWebApp.Test\CaffWebApp.Test.csproj --collect:"XPlat Code Coverage"
           .\.sonar\scanner\dotnet-sonarscanner end /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
