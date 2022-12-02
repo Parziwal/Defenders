@@ -86,8 +86,7 @@ public class CaffService : ICaffService
 
         var caff = new DAL.Entites.Caff()
         {
-            CreatorName = parsedCaff.CreaterName,
-            AnimationDuration = parsedCaff.AnimationDuration,
+            CreatorName = parsedCaff.CreatorName,
             OriginalFileName = parsedCaff.OriginalFileName,
             StoredFileName = parsedCaff.StoredFileName,
             CreatedAt = parsedCaff.CreatedAt,
@@ -98,6 +97,7 @@ public class CaffService : ICaffService
                 {
                     Caption = ciff.Caption,
                     Tags = ciff.Tags,
+                    Duration = ciff.Duration,
                     Width = ciff.Width,
                     Height = ciff.Height
                 })

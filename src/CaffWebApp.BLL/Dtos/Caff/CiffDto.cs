@@ -5,6 +5,7 @@ public class CiffDto
     public string Caption { get; set; }
     public int Width { get; set; }
     public int Height { get; set; }
+    public int Duration { get; set; }
     public List<string> Tags { get; set; }
 
     public CiffDto() { }
@@ -12,6 +13,7 @@ public class CiffDto
     public CiffDto(DAL.Entites.Ciff entity)
     {
         Caption = entity.Caption;
+        Duration = entity.Duration;
         Width = entity.Width;
         Height = entity.Height;
         Tags = entity.Tags.Split(',').ToList();

@@ -4,6 +4,7 @@ public class CaffDto
 {
     public int Id { get; set; }
     public string FileName { get; set; }
+    public string FileUri { get; set; }
     public string CreatorName { get; set; }
     public DateTimeOffset CreatedAt { get; set; }
     public string UploadedBy { get; set; }
@@ -16,7 +17,8 @@ public class CaffDto
     public CaffDto(DAL.Entites.Caff entity)
     {
         Id = entity.Id;
-        FileName = entity.StoredFileName;
+        FileName = entity.OriginalFileName;
+        FileUri = entity.StoredFileName + ".gif";
         CreatorName = entity.CreatorName;
         CreatedAt = entity.CreatedAt;
         UploadedBy = entity.UploadedBy.Fullname;
