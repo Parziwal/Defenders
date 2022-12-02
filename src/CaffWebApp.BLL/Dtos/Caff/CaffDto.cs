@@ -19,7 +19,7 @@ public class CaffDto
         CreatedAt = entity.CreatedAt;
         UploadedBy = entity.UploadedBy.Fullname;
         UploadedAt = entity.UploadedAt;
-        Captions = entity.CiffImages.Select(ciff => ciff.Caption).ToList();
+        Captions = entity.CiffImages.Select(ciff => ciff.Caption).ToHashSet();
         Tags = entity.CiffImages.SelectMany(ciff => ciff.Tags.Split(',')).ToHashSet();
     }
 }

@@ -11,7 +11,7 @@ public class CommentDto
     {
         Id = entity.Id;
         Text = entity.Text;
-        CreatedBy = entity.CreatedBy.UserName;
+        CreatedBy = entity.CreatedBy.Fullname;
         CreateAt = entity.CreateAt;
     }
 }

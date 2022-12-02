@@ -12,6 +12,7 @@ public static class StaticFilesExtensions
         Directory.CreateDirectory(imagePath.Raw);
         Directory.CreateDirectory(imagePath.Parsed);
 
+        app.UseStaticFiles();
         app.UseStaticFiles(new StaticFileOptions
         {
             FileProvider = new PhysicalFileProvider(Path.GetFullPath("images")),

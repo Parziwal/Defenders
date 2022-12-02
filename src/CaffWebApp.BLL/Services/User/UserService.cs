@@ -24,7 +24,7 @@ public class UserService : IUserService
     {
         var user = await _userManager.FindByIdAsync(userId);
 
-        if (user == null || user.Id != _httpContext.GetCurrentUserId())
+        if (user == null || user.Id == _httpContext.GetCurrentUserId())
         {
              throw new EntityNotFoundException($"User with {userId} id does not exists!");
         }
