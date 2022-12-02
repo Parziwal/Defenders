@@ -12,6 +12,8 @@ public class CaffDto
     public ICollection<string> Captions { get; set; }
     public ICollection<string> Tags { get; set; }
 
+    public CaffDto() {}
+
     public CaffDto(DAL.Entites.Caff entity)
     {
         Id = entity.Id;
@@ -21,7 +23,7 @@ public class CaffDto
         CreatedAt = entity.CreatedAt;
         UploadedBy = entity.UploadedBy.Fullname;
         UploadedAt = entity.UploadedAt;
-        Captions = entity.CiffImages.Select(ciff => ciff.Caption).ToList();
+        Captions = entity.CiffImages.Select(ciff => ciff.Caption).ToHashSet();
         Tags = entity.CiffImages.SelectMany(ciff => ciff.Tags.Split(',')).ToHashSet();
     }
 }

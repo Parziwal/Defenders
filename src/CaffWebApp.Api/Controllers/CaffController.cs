@@ -24,8 +24,8 @@ namespace CaffWebApp.Api.Controllers
 
 
         [HttpGet("{caffId}")]
-        public Task<CaffDetailsDto> GetCaffDetails(int caffId) =>
-            _caffService.GetCaffDetails(caffId);
+        public async Task<ActionResult<CaffDetailsDto>> GetCaffDetails(int caffId) =>
+            await _caffService.GetCaffDetails(caffId);
 
         [HttpGet("{caffId}/download")]
         public async Task<FileResult> DownloadCaffFile(int caffId)

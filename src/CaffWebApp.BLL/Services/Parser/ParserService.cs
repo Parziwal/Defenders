@@ -20,7 +20,7 @@ public class ParserService : IParserService
 
     public async Task<byte[]> GetCaffFileContent(string fileName)
     {
-        return await File.ReadAllBytesAsync(Path.Combine(_imagePath.Raw, fileName));
+        return await File.ReadAllBytesAsync(Path.Combine(_imagePath.Raw, fileName + ".caff"));
     }
 
     public async Task<CaffParsedDto> ParseCaffFile(AddCaffDto caffDto)

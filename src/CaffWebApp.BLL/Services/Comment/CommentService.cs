@@ -32,7 +32,8 @@ public class CommentService : ICommentService
         {
             CaffImage = caff,
             Text = commentDto.CommentText,
-            CreatedById = _httpContext.GetCurrentUserId(),
+            CreatedBy = await _dbContext.Users
+                       .SingleAsync(user => user.Id == _httpContext.GetCurrentUserId()),
             CreateAt = DateTimeOffset.Now,            
         };
 
@@ -46,6 +47,7 @@ public class CommentService : ICommentService
     public async Task<CommentDto> EditComment(int commentId, AddOrEditCommentDto commentDto)
     {
         var comment = await _dbContext.Comments
+                       .Include(comment => comment.CreatedBy)
                        .SingleOrDefaultAsync(comment => comment.Id == commentId);
 
         if (comment == null)
