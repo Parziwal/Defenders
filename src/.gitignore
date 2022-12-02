@@ -406,5 +406,6 @@ CaffWebApp.Parser/*.gif
 
 # API
 CaffWebApp.Api/keys
-CaffWebApp.Api/native
+CaffWebApp.Api/native/*
 CaffWebApp.Api/images
+!CaffWebApp.Api/native/CaffWebApp.Parser.dll
