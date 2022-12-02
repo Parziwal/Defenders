@@ -1,6 +1,4 @@
-import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
-import { CaffClient } from './api/api.generated';
 
 @Component({
   selector: 'app-root',
@@ -8,18 +6,10 @@ import { CaffClient } from './api/api.generated';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  public forecasts?: WeatherForecast[];
 
-  constructor(private readonly _service: CaffClient) {
-   // this._service.listCaffImages().subscribe();
+  constructor() {
   }
 
   title = 'CaffWebApp.Web';
 }
 
-interface WeatherForecast {
-  date: string;
-  temperatureC: number;
-  temperatureF: number;
-  summary: string;
-}

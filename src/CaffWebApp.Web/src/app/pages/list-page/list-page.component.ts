@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import {CaffClient} from "../../api/api.generated";
 
 @Component({
   selector: 'app-list-page',
@@ -6,7 +7,9 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./list-page.component.css'],
 })
 export class ListPageComponent implements OnInit {
-  constructor() {}
+  constructor(private readonly _service: CaffClient) {
+
+  }
 
   list = [
     {

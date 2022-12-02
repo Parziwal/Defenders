@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { UserClient } from "../../api/api.generated";
 
 @Component({
   selector: 'app-admin-page',
@@ -7,7 +8,7 @@ import { Component, OnInit } from '@angular/core';
 })
 export class AdminPageComponent implements OnInit {
 
-  constructor() { }
+  constructor(private readonly _service: UserClient) { }
 
   users = [
     {

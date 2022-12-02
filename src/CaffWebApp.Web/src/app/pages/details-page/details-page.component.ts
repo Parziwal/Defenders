@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import {CaffClient, CommentClient} from "../../api/api.generated";
 
 @Component({
   selector: 'app-details-page',
@@ -7,7 +8,8 @@ import { Component, OnInit } from '@angular/core';
 })
 export class DetailsPageComponent implements OnInit {
   public editing = false;
-  constructor() { }
+  constructor(private readonly _caffService: CaffClient,
+              private readonly _commentService: CommentClient) { }
 
   caff =  {
     "id": 0,
