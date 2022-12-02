@@ -1,17 +1,22 @@
 <div style="max-width: 600px mx-auto">
   <div class="d-flex justify-conten-start mb-3">
-    <button class="btn btn-primary" type="button">
+    <!-- <button class="btn btn-primary" type="button">
       Feltöltés
-    </button>
+    </button> -->
+    <div>
+      <label class="btn btn-primary" for="files">Feltöltés</label>
+      <input id="files" type="file" (change)="onFileSelected($event)" class="d-none">
+    </div>
   </div>
   <div class="input-group mb-3">
     <input
+      [(ngModel)]="searchTerm"
       type="text"
       class="form-control"
       placeholder="Keresett kifejezések"
       aria-describedby="button-addon2"
     />
-    <button class="btn btn-primary" type="button" id="button-addon2">
+    <button class="btn btn-primary" type="button" id="button-addon2" (click)="searchCaffImages()">
       Keresés
     </button>
   </div>
@@ -28,7 +33,7 @@
         class="d-flex justify-content-between bg-primary bg-opacity-10 my-2 py-2"
       >
         <span class="">Feliratok:</span>
-        <ul class="" style="">
+        <ul class="">
           <li class="" *ngFor="let caption of item.captions">{{ caption }}</li>
         </ul>
       </div>
@@ -43,7 +48,7 @@
         </span>
       </div>
       <div class="d-flex justify-content-center pt-3">
-        <button class="btn btn-primary" style="width: 100%">Részletek</button>
+        <button (click)="goToDetails(item)" class="btn btn-primary" style="width: 100%">Részletek</button>
       </div>
     </div>
   </div>

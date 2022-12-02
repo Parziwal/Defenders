@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import {CaffClient} from "../../api/api.generated";
+import { Router } from '@angular/router';
+import { CaffClient, CaffDto } from '../../api/api.generated';
 
 @Component({
   selector: 'app-list-page',
@@ -7,41 +8,27 @@ import {CaffClient} from "../../api/api.generated";
   styleUrls: ['./list-page.component.css'],
 })
 export class ListPageComponent implements OnInit {
-  constructor(private readonly _service: CaffClient) {
-
+  list: CaffDto[] = [];
+  constructor(private readonly service: CaffClient, private router: Router) {
+    service.listCaffImages().subscribe((result) => (this.list = result));
   }
 
-  list = [
-    {
-      "id": 1,
-      "fileName": "Cica.caff",
-      "creatorName": "Random Ronaldo",
-      "createdAt": "2022-11-30T20:20:23.227Z",
-      "uploadedBy": "Random Ronaldo",
-      "uploadedAt": "2022-11-30T20:20:23.227Z",
-      "captions": [
-        "Nagyon aranyos", "Legjobb barát"
-      ],
-      "tags": [
-        "állat", "hobby"
-      ]
-    },
-    {
-      "id": 2,
-      "fileName": "Kutya.caff",
-      "creatorName": "Random Ronaldo",
-      "createdAt": "2022-11-30T20:20:23.227Z",
-      "uploadedBy": "Random Ronaldo",
-      "uploadedAt": "2022-11-30T20:20:23.227Z",
-      "captions": [
-        "Nagyon aranyos", "Legjobb barát"
-      ],
-      "tags": [
-        "állat", "hobby"
-      ]
-    }
-  ];
-
-
   ngOnInit(): void {}
+
+  goToDetails(element: any) {
+    this.router.navigate(['/details', { id: element.id }]);
+  }
+
+  searchTerm = ""
+  searchCaffImages(){
+    this.service.listCaffImages(this.searchTerm).subscribe(result => this.list=result)
+  }
+  
+
+  onFileSelected(event:any) {
+    const file: File = event.target.files[0];
+    if (file) {
+      this.service.uploadCaffFile({data: file,fileName: 'file.caff'}).subscribe();
+    }
+  }
 }
