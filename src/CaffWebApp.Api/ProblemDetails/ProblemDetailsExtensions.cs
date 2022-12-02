@@ -14,5 +14,12 @@ public static class ProblemDetailsExtensions
                 problemDetails.Title = exception.Message;
                 return problemDetails;
             });
+
+            options.Map<ParserException>((context, exception) =>
+            {
+                var problemDetails = StatusCodeProblemDetails.Create(StatusCodes.Status400BadRequest);
+                problemDetails.Title = exception.Message;
+                return problemDetails;
+            });
         });
 }

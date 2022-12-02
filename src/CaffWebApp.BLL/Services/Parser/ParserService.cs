@@ -1,5 +1,6 @@
 ﻿using CaffWebApp.BLL.Dtos.Caff;
 using CaffWebApp.BLL.Dtos.Parser;
+using CaffWebApp.BLL.Exceptions;
 using CaffWebApp.BLL.Options;
 using Microsoft.Extensions.Options;
 using System.Runtime.InteropServices;
@@ -41,8 +42,16 @@ public class ParserService : IParserService
             await caffDto.CaffFile.CopyToAsync(fileStream);
         }
 
-        if (ParseCaffFile(filePath, outputPath) != 0)
-            return null;
+        try
+        {
+            if (ParseCaffFile(filePath, outputPath) != 0)
+                throw new Exception();
+        }
+        catch (Exception)
+        {
+            throw new ParserException("Parser exception occured!");
+        }
+        
 
         using (var metaDataReader = new StreamReader(outputPath + ".metadata"))
         {
