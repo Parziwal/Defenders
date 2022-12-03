@@ -27,6 +27,10 @@ export class AuthService implements OnInit {
     return this.user != null && !this.user.expired;
   }
 
+  get isAdmin(): boolean {
+    return this.user?.profile['role'] == 'Admin';
+  }
+
   get getClaims(): any {
     if (this.user)
       return this.user.profile;
@@ -56,6 +60,10 @@ export class AuthService implements OnInit {
         state: someState,
       }
     );
+  }
+
+  public logout(): Promise<void> {
+    return this.manager.signoutRedirect();
   }
 
   startAuthentication(): Promise<void> {

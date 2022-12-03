@@ -9,11 +9,9 @@ import {AuthService} from "./auth/auth.service";
 export class AppComponent {
   user: any;
 
-
-  constructor(private _service: AuthService) {
-    this._service.currentUser().then(resp => {
+  constructor(public authService: AuthService) {
+    this.authService.currentUser().then(resp => {
       this.user = resp?.profile.name;
-      //this.user = resp?.profile['role'];
     });
 
   }

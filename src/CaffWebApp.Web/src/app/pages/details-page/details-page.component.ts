@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {AddOrEditCommentDto, CaffClient, CaffDetailsDto, CommentClient} from "../../api/api.generated";
 import {ActivatedRoute} from "@angular/router";
+import {AuthService} from "../../auth/auth.service";
 
 @Component({
   selector: 'app-details-page',
@@ -11,15 +12,18 @@ export class DetailsPageComponent implements OnInit {
   private readonly _caffId: number;
   public caff?: CaffDetailsDto;
   public commentText?: string;
+  public isAdmin = false;
 
   constructor(private readonly _caffService: CaffClient,
               private _route: ActivatedRoute,
-              private readonly _commentService: CommentClient) {
+              private readonly _commentService: CommentClient,
+              public authService: AuthService) {
     this._caffId =  +this._route.snapshot.params['id'];
   }
 
   ngOnInit(): void {
     this.getCaffDetails();
+    this.isAdmin = this.authService.isAdmin;
   }
 
   private getCaffDetails() {
