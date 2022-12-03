@@ -36,7 +36,11 @@
       <button class="btn btn-outline-secondary" type="button" id="button-addon2" (click)="addNewComment()">Küldés</button>
     </div>
     <div *ngFor="let comment of caff?.comments">
-      <app-comment [comment]="comment" [isAdmin]="isAdmin" (commentDeleted)="deleteComment(comment!.id!)">
+      <app-comment [comment]="comment"
+                   [isAdmin]="isAdmin"
+                   (commentDeleted)="deleteComment(comment!.id!)"
+                   (commentUpdated)="updateComment(comment!.id!)"
+      >
       </app-comment>
     </div>
   </div>

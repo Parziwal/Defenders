@@ -52,6 +52,13 @@ export class DetailsPageComponent implements OnInit {
     );
   }
 
+  public updateComment(commentId: number) {
+    this._commentService.editComment(commentId,new AddOrEditCommentDto({commentText: this.commentText})).subscribe(
+      () => this.showSuccess("Komment szerkesztése!"),
+      () => this.showError("Komment szerkesztése sikertelen")
+    );
+  }
+
   public downloadFile() {
     this._caffService.downloadCaffFile(this._caffId).subscribe((response) => {
       let filename: string = `${this._caffId}.caff`;

@@ -1,5 +1,5 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {AddOrEditCommentDto, CommentClient, CommentDto} from "../../../api/api.generated";
+import {CommentDto} from "../../../api/api.generated";
 
 @Component({
   selector: 'app-comment',
@@ -10,9 +10,10 @@ export class CommentComponent implements OnInit {
   @Input() public comment?: CommentDto;
   @Input() public isAdmin: boolean = false;
   @Output() commentDeleted = new EventEmitter<number>();
+  @Output() commentUpdated = new EventEmitter<number>();
   editing = false
   public commentText?: string;
-  constructor(private readonly _commentService: CommentClient,) { }
+  constructor() { }
 
   ngOnInit(): void {
   }
@@ -23,7 +24,7 @@ export class CommentComponent implements OnInit {
 
   public updateComment(commentId: number) {
     this.editing = false
-    this._commentService.editComment(commentId,new AddOrEditCommentDto({commentText: this.commentText})).subscribe();
+    this.commentUpdated.emit(commentId);
   }
 
 
