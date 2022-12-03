@@ -8,10 +8,11 @@ import {AddOrEditCommentDto, CommentClient, CommentDto} from "../../../api/api.g
 })
 export class CommentComponent implements OnInit {
   @Input() public comment?: CommentDto;
+  @Input() public isAdmin: boolean = false;
   @Output() commentDeleted = new EventEmitter<number>();
   editing = false
   public commentText?: string;
-  constructor(private readonly _commentService: CommentClient) { }
+  constructor(private readonly _commentService: CommentClient,) { }
 
   ngOnInit(): void {
   }

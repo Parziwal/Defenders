@@ -1,7 +1,7 @@
 <div style="max-width: 1280px;">
   <div class="d-flex justify-content-between">
       <div class="details-container">
-        <h1 class="bg-primary bg-opacity-10">{{caff?.fileName}}</h1>
+          <h1 class="bg-primary bg-opacity-10">{{caff?.fileName}}</h1>
         <hr>
         <div>Készítette: {{caff?.creatorName}}</div>
         <div class="bg-primary bg-opacity-10">Készült: {{caff?.createdAt | date: 'long'}}</div>
@@ -11,21 +11,30 @@
         <div class="bg-primary bg-opacity-10">Feltöltő neve: {{caff?.uploadedBy?.fullName}}</div>
         <div>Feltöltő email címe: {{caff?.uploadedBy?.email}}</div>
         <div class="bg-primary bg-opacity-10">Feltöltés dátuma:{{caff?.uploadedAt| date: 'long'}}</div>
+        <div *ngFor="let ciff of caff?.ciffImages">
+          <div>Címekék:{{ciff.caption}}</div>
+          <div>Magasság:{{ciff.height}}</div>
+          <div>Szélesség:{{ciff.width}}</div>
+          <div>Animáció tartalma:{{ciff.duration}}</div>
+        </div>
       </div>
     <div>
-      <img src="assets/logo.svg" style="max-width: 500px;" alt="...">
-          <button class="btn btn-sm btn-outline-primary w-100 mt-5" (click)="downloadFile()">Letöltés</button>
-    </div>
+      <img src="assets/logo.svg" alt="caff.name">
+      <div class="d-grid gap-2 d-md-flex justify-content-md-end ">
+        <button class="btn btn-sm btn-outline-primary w-50 mt-5" (click)="downloadFile()">Letöltés</button>
+        <button *ngIf="isAdmin" class="btn btn-sm btn-outline-danger w-50 mt-5" (click)="downloadFile()">Törlés</button>
+      </div>
+      </div>
   </div>
   <div>
     <h1>Kommentek</h1>
     <div class="input-group mb-3">
-      <input type="text" class="form-control" placeholder="Komment" aria-label="Új komment"[(ngModel)]="commentText"
+      <input type="text" class="form-control" placeholder="Komment" aria-label="Új komment" [(ngModel)]="commentText"
              aria-describedby="button-addon2">
-      <button class="btn btn-outline-secondary" type="button" id="button-addon2" (click)="addNewComment()">Button</button>
+      <button class="btn btn-outline-secondary" type="button" id="button-addon2" (click)="addNewComment()">Küldés</button>
     </div>
     <div *ngFor="let comment of caff?.comments">
-      <app-comment [comment]="comment" (commentDeleted)="deleteComment(comment!.id!)">
+      <app-comment [comment]="comment" [isAdmin]="isAdmin" (commentDeleted)="deleteComment(comment!.id!)">
       </app-comment>
     </div>
   </div>

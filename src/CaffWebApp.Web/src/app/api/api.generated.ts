@@ -586,6 +586,7 @@ export class UserClient {
 export class CaffDto implements ICaffDto {
     id?: number;
     fileName?: string;
+    fileUri?: string;
     creatorName?: string;
     createdAt?: Date;
     uploadedBy?: string;
@@ -606,6 +607,7 @@ export class CaffDto implements ICaffDto {
         if (_data) {
             this.id = _data["id"] !== undefined ? _data["id"] : <any>null;
             this.fileName = _data["fileName"] !== undefined ? _data["fileName"] : <any>null;
+            this.fileUri = _data["fileUri"] !== undefined ? _data["fileUri"] : <any>null;
             this.creatorName = _data["creatorName"] !== undefined ? _data["creatorName"] : <any>null;
             this.createdAt = _data["createdAt"] ? new Date(_data["createdAt"].toString()) : <any>null;
             this.uploadedBy = _data["uploadedBy"] !== undefined ? _data["uploadedBy"] : <any>null;
@@ -640,6 +642,7 @@ export class CaffDto implements ICaffDto {
         data = typeof data === 'object' ? data : {};
         data["id"] = this.id !== undefined ? this.id : <any>null;
         data["fileName"] = this.fileName !== undefined ? this.fileName : <any>null;
+        data["fileUri"] = this.fileUri !== undefined ? this.fileUri : <any>null;
         data["creatorName"] = this.creatorName !== undefined ? this.creatorName : <any>null;
         data["createdAt"] = this.createdAt ? this.createdAt.toISOString() : <any>null;
         data["uploadedBy"] = this.uploadedBy !== undefined ? this.uploadedBy : <any>null;
@@ -661,6 +664,7 @@ export class CaffDto implements ICaffDto {
 export interface ICaffDto {
     id?: number;
     fileName?: string;
+    fileUri?: string;
     creatorName?: string;
     createdAt?: Date;
     uploadedBy?: string;
@@ -672,8 +676,8 @@ export interface ICaffDto {
 export class CaffDetailsDto implements ICaffDetailsDto {
     id?: number;
     creatorName?: string;
-    animationDuration?: number;
     fileName?: string;
+    fileUri?: string;
     createdAt?: Date;
     uploadedBy?: UserDto;
     uploadedAt?: Date;
@@ -708,8 +712,8 @@ export class CaffDetailsDto implements ICaffDetailsDto {
         if (_data) {
             this.id = _data["id"] !== undefined ? _data["id"] : <any>null;
             this.creatorName = _data["creatorName"] !== undefined ? _data["creatorName"] : <any>null;
-            this.animationDuration = _data["animationDuration"] !== undefined ? _data["animationDuration"] : <any>null;
             this.fileName = _data["fileName"] !== undefined ? _data["fileName"] : <any>null;
+            this.fileUri = _data["fileUri"] !== undefined ? _data["fileUri"] : <any>null;
             this.createdAt = _data["createdAt"] ? new Date(_data["createdAt"].toString()) : <any>null;
             this.uploadedBy = _data["uploadedBy"] ? UserDto.fromJS(_data["uploadedBy"]) : <any>null;
             this.uploadedAt = _data["uploadedAt"] ? new Date(_data["uploadedAt"].toString()) : <any>null;
@@ -743,8 +747,8 @@ export class CaffDetailsDto implements ICaffDetailsDto {
         data = typeof data === 'object' ? data : {};
         data["id"] = this.id !== undefined ? this.id : <any>null;
         data["creatorName"] = this.creatorName !== undefined ? this.creatorName : <any>null;
-        data["animationDuration"] = this.animationDuration !== undefined ? this.animationDuration : <any>null;
         data["fileName"] = this.fileName !== undefined ? this.fileName : <any>null;
+        data["fileUri"] = this.fileUri !== undefined ? this.fileUri : <any>null;
         data["createdAt"] = this.createdAt ? this.createdAt.toISOString() : <any>null;
         data["uploadedBy"] = this.uploadedBy ? this.uploadedBy.toJSON() : <any>null;
         data["uploadedAt"] = this.uploadedAt ? this.uploadedAt.toISOString() : <any>null;
@@ -765,8 +769,8 @@ export class CaffDetailsDto implements ICaffDetailsDto {
 export interface ICaffDetailsDto {
     id?: number;
     creatorName?: string;
-    animationDuration?: number;
     fileName?: string;
+    fileUri?: string;
     createdAt?: Date;
     uploadedBy?: IUserDto;
     uploadedAt?: Date;
@@ -822,6 +826,7 @@ export class CiffDto implements ICiffDto {
     caption?: string;
     width?: number;
     height?: number;
+    duration?: number;
     tags?: string[];
 
     constructor(data?: ICiffDto) {
@@ -838,6 +843,7 @@ export class CiffDto implements ICiffDto {
             this.caption = _data["caption"] !== undefined ? _data["caption"] : <any>null;
             this.width = _data["width"] !== undefined ? _data["width"] : <any>null;
             this.height = _data["height"] !== undefined ? _data["height"] : <any>null;
+            this.duration = _data["duration"] !== undefined ? _data["duration"] : <any>null;
             if (Array.isArray(_data["tags"])) {
                 this.tags = [] as any;
                 for (let item of _data["tags"])
@@ -861,6 +867,7 @@ export class CiffDto implements ICiffDto {
         data["caption"] = this.caption !== undefined ? this.caption : <any>null;
         data["width"] = this.width !== undefined ? this.width : <any>null;
         data["height"] = this.height !== undefined ? this.height : <any>null;
+        data["duration"] = this.duration !== undefined ? this.duration : <any>null;
         if (Array.isArray(this.tags)) {
             data["tags"] = [];
             for (let item of this.tags)
@@ -874,6 +881,7 @@ export interface ICiffDto {
     caption?: string;
     width?: number;
     height?: number;
+    duration?: number;
     tags?: string[];
 }
 

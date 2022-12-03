@@ -17,6 +17,7 @@
             <span class="fw-bold fs-3 navlink">Defenders</span>
           <div *ngIf="authService.isLoggedIn">
             <a class="fw-bold fs-3 navlink" href="https://localhost:5001/Identity/Account/Manage">{{user}}</a>
+            <a *ngIf="authService.isAdmin" class="fw-bold fs-3 navlink" routerLink="/admin">Felhasználók</a>
             <a class="fw-bold fs-3 navlink" (click)="authService.logout()">Kijelentkezés</a>
           </div>
         </div>

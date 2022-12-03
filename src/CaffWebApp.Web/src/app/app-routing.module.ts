@@ -30,7 +30,7 @@ const routes: Routes = [
   {
     path: 'admin',
     component: AdminPageComponent,
-    canActivate: [AuthGuardService]
+    canActivate: [AuthGuardService, AdminGuardService]
   },
   {
     path: 'details/:id',
