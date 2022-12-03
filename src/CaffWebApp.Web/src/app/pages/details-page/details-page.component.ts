@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import {CaffClient, CaffDetailsDto, CommentClient} from "../../api/api.generated";
+import {AddOrEditCommentDto, CaffClient, CaffDetailsDto, CommentClient} from "../../api/api.generated";
 import {ActivatedRoute} from "@angular/router";
 
 @Component({
@@ -8,7 +8,6 @@ import {ActivatedRoute} from "@angular/router";
   styleUrls: ['./details-page.component.css']
 })
 export class DetailsPageComponent implements OnInit {
-  private readonly _id: string | null;
   private readonly _caffId: number;
   public caff?: CaffDetailsDto;
   public commentText?: string;
@@ -16,19 +15,22 @@ export class DetailsPageComponent implements OnInit {
   constructor(private readonly _caffService: CaffClient,
               private _route: ActivatedRoute,
               private readonly _commentService: CommentClient) {
-    this._id = this._route.snapshot.paramMap.get('id');
-    this._caffId = Number(this._id);
-
+    this._caffId =  +this._route.snapshot.params['id'];
   }
 
   ngOnInit(): void {
-    this._caffService.getCaffDetails(Number(this._id)).subscribe(response => {
+    this.getCaffDetails();
+  }
+
+  private getCaffDetails() {
+    this._caffService.getCaffDetails(this._caffId).subscribe(response => {
       this.caff = response;
     });
   }
 
   public addNewComment() {
-   // this._commentService.addCommentToCaff(this._caffId, {commentText: commentText}).subscribe()
+   this._commentService.addCommentToCaff(this._caffId, new AddOrEditCommentDto({commentText: this.commentText})).subscribe();
+   this.getCaffDetails();
   }
 
   public deleteComment(commentId: number) {

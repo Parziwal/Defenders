@@ -1,5 +1,5 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {CommentClient, CommentDto} from "../../../api/api.generated";
+import {AddOrEditCommentDto, CommentClient, CommentDto} from "../../../api/api.generated";
 
 @Component({
   selector: 'app-comment',
@@ -22,7 +22,7 @@ export class CommentComponent implements OnInit {
 
   public updateComment(commentId: number) {
     this.editing = false
-   // this._commentService.editComment(commentId,{commentText}).subscribe();
+    this._commentService.editComment(commentId,new AddOrEditCommentDto({commentText: this.commentText})).subscribe();
   }
 
 

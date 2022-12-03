@@ -16,19 +16,19 @@ export class ListPageComponent implements OnInit {
   ngOnInit(): void {}
 
   goToDetails(element: any) {
-    this.router.navigate(['/details', { id: element.id }]);
+    this.router.navigate(['/details', element.id]);
   }
 
   searchTerm = ""
   searchCaffImages(){
     this.service.listCaffImages(this.searchTerm).subscribe(result => this.list=result)
   }
-  
 
   onFileSelected(event:any) {
     const file: File = event.target.files[0];
     if (file) {
       this.service.uploadCaffFile({data: file,fileName: 'file.caff'}).subscribe();
     }
+    this.searchCaffImages();
   }
 }
