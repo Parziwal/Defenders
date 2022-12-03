@@ -15,6 +15,7 @@ export class AppComponent {
     });
 
   }
+
   title = 'CaffWebApp.Web';
 }
 

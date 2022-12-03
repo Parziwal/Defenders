@@ -12,6 +12,7 @@ import { AdminPageComponent } from './pages/admin-page/admin-page.component';
 import { DetailsPageComponent } from './pages/details-page/details-page.component';
 import { ListPageComponent } from './pages/list-page/list-page.component';
 import { CommentComponent } from './pages/details-page/comment/comment.component';
+import {ToastNoAnimationModule, ToastrModule} from "ngx-toastr";
 
 @NgModule({
   declarations: [
@@ -20,11 +21,11 @@ import { CommentComponent } from './pages/details-page/comment/comment.component
     AdminPageComponent,
     DetailsPageComponent,
     ListPageComponent,
-    CommentComponent
-    
+    CommentComponent,
+
   ],
   imports: [
-    BrowserModule, HttpClientModule, AppRoutingModule, AuthModule,FormsModule
+    BrowserModule, HttpClientModule, AppRoutingModule, AuthModule,FormsModule,ToastrModule.forRoot(),ToastNoAnimationModule.forRoot(),
   ],
   providers: [],
   bootstrap: [AppComponent]

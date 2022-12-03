@@ -5,17 +5,19 @@
         <hr>
         <div>Készítette: {{caff?.creatorName}}</div>
         <div class="bg-primary bg-opacity-10">Készült: {{caff?.createdAt | date: 'long'}}</div>
-        <div>Címekék:</div>
-        <div class="bg-primary bg-opacity-10">Felirat: {{caff?.ciffImages![0].caption}}</div>
         <div>Készült: {{caff?.createdAt | date: 'long'}}</div>
         <div class="bg-primary bg-opacity-10">Feltöltő neve: {{caff?.uploadedBy?.fullName}}</div>
         <div>Feltöltő email címe: {{caff?.uploadedBy?.email}}</div>
         <div class="bg-primary bg-opacity-10">Feltöltés dátuma:{{caff?.uploadedAt| date: 'long'}}</div>
         <div *ngFor="let ciff of caff?.ciffImages">
-          <div>Címekék:{{ciff.caption}}</div>
+          <div>Felirat:{{ciff.caption}}</div>
           <div>Magasság:{{ciff.height}}</div>
           <div>Szélesség:{{ciff.width}}</div>
           <div>Animáció tartalma:{{ciff.duration}}</div>
+          <div>Címkék:
+            <span
+            *ngFor="let tag of ciff?.tags" class="bg-primary text-white px-2 py-1 rounded ms-1">{{ tag }}</span>
+          </div>
         </div>
       </div>
     <div>
