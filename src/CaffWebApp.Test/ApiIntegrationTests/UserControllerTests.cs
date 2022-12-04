@@ -41,7 +41,7 @@ public class UserControllerTests : WebServerFixture
         //Assert
         Assert.Equal(HttpStatusCode.OK, userResponse.StatusCode);
         var result = await DbContext.Users.SingleOrDefaultAsync(user => user.Id == userId);
-        Assert.Null(result);
+        Assert.True(result!.IsDeleted);
     }
 
     [Fact]

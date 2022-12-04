@@ -28,9 +28,11 @@ export class CaffClient {
         this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
     }
 
-    listCaffImages(searchText?: string | null | undefined): Observable<CaffDto[]> {
+    listCaffImages(searchText?: string | undefined): Observable<CaffDto[]> {
         let url_ = this.baseUrl + "/api/Caff?";
-        if (searchText !== undefined && searchText !== null)
+        if (searchText === null)
+            throw new Error("The parameter 'searchText' cannot be null.");
+        else if (searchText !== undefined)
             url_ += "SearchText=" + encodeURIComponent("" + searchText) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -238,12 +240,14 @@ export class CaffClient {
         return _observableOf(null as any);
     }
 
-    uploadCaffFile(caffFile?: FileParameter | null | undefined): Observable<CaffDetailsDto> {
+    uploadCaffFile(caffFile?: FileParameter | undefined): Observable<CaffDetailsDto> {
         let url_ = this.baseUrl + "/api/Caff/upload";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = new FormData();
-        if (caffFile !== null && caffFile !== undefined)
+        if (caffFile === null || caffFile === undefined)
+            throw new Error("The parameter 'caffFile' cannot be null.");
+        else
             content_.append("CaffFile", caffFile.data, caffFile.fileName ? caffFile.fileName : "CaffFile");
 
         let options_ : any = {
@@ -531,7 +535,7 @@ export class UserClient {
         return _observableOf(null as any);
     }
 
-    deleteUser(userId: number): Observable<void> {
+    deleteUser(userId: string): Observable<void> {
         let url_ = this.baseUrl + "/api/User/{userId}";
         if (userId === undefined || userId === null)
             throw new Error("The parameter 'userId' must be defined.");
@@ -545,7 +549,7 @@ export class UserClient {
             })
         };
 
-        return this.http.request("put", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+        return this.http.request("delete", url_, options_).pipe(_observableMergeMap((response_ : any) => {
             return this.processDeleteUser(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
@@ -582,6 +586,7 @@ export class UserClient {
 export class CaffDto implements ICaffDto {
     id?: number;
     fileName?: string;
+    fileUri?: string;
     creatorName?: string;
     createdAt?: Date;
     uploadedBy?: string;
@@ -602,6 +607,7 @@ export class CaffDto implements ICaffDto {
         if (_data) {
             this.id = _data["id"] !== undefined ? _data["id"] : <any>null;
             this.fileName = _data["fileName"] !== undefined ? _data["fileName"] : <any>null;
+            this.fileUri = _data["fileUri"] !== undefined ? _data["fileUri"] : <any>null;
             this.creatorName = _data["creatorName"] !== undefined ? _data["creatorName"] : <any>null;
             this.createdAt = _data["createdAt"] ? new Date(_data["createdAt"].toString()) : <any>null;
             this.uploadedBy = _data["uploadedBy"] !== undefined ? _data["uploadedBy"] : <any>null;
@@ -636,6 +642,7 @@ export class CaffDto implements ICaffDto {
         data = typeof data === 'object' ? data : {};
         data["id"] = this.id !== undefined ? this.id : <any>null;
         data["fileName"] = this.fileName !== undefined ? this.fileName : <any>null;
+        data["fileUri"] = this.fileUri !== undefined ? this.fileUri : <any>null;
         data["creatorName"] = this.creatorName !== undefined ? this.creatorName : <any>null;
         data["createdAt"] = this.createdAt ? this.createdAt.toISOString() : <any>null;
         data["uploadedBy"] = this.uploadedBy !== undefined ? this.uploadedBy : <any>null;
@@ -657,6 +664,7 @@ export class CaffDto implements ICaffDto {
 export interface ICaffDto {
     id?: number;
     fileName?: string;
+    fileUri?: string;
     creatorName?: string;
     createdAt?: Date;
     uploadedBy?: string;
@@ -667,9 +675,9 @@ export interface ICaffDto {
 
 export class CaffDetailsDto implements ICaffDetailsDto {
     id?: number;
-    createrName?: string;
-    animationDuration?: number;
+    creatorName?: string;
     fileName?: string;
+    fileUri?: string;
     createdAt?: Date;
     uploadedBy?: UserDto;
     uploadedAt?: Date;
@@ -703,9 +711,9 @@ export class CaffDetailsDto implements ICaffDetailsDto {
     init(_data?: any) {
         if (_data) {
             this.id = _data["id"] !== undefined ? _data["id"] : <any>null;
-            this.createrName = _data["createrName"] !== undefined ? _data["createrName"] : <any>null;
-            this.animationDuration = _data["animationDuration"] !== undefined ? _data["animationDuration"] : <any>null;
+            this.creatorName = _data["creatorName"] !== undefined ? _data["creatorName"] : <any>null;
             this.fileName = _data["fileName"] !== undefined ? _data["fileName"] : <any>null;
+            this.fileUri = _data["fileUri"] !== undefined ? _data["fileUri"] : <any>null;
             this.createdAt = _data["createdAt"] ? new Date(_data["createdAt"].toString()) : <any>null;
             this.uploadedBy = _data["uploadedBy"] ? UserDto.fromJS(_data["uploadedBy"]) : <any>null;
             this.uploadedAt = _data["uploadedAt"] ? new Date(_data["uploadedAt"].toString()) : <any>null;
@@ -738,9 +746,9 @@ export class CaffDetailsDto implements ICaffDetailsDto {
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["id"] = this.id !== undefined ? this.id : <any>null;
-        data["createrName"] = this.createrName !== undefined ? this.createrName : <any>null;
-        data["animationDuration"] = this.animationDuration !== undefined ? this.animationDuration : <any>null;
+        data["creatorName"] = this.creatorName !== undefined ? this.creatorName : <any>null;
         data["fileName"] = this.fileName !== undefined ? this.fileName : <any>null;
+        data["fileUri"] = this.fileUri !== undefined ? this.fileUri : <any>null;
         data["createdAt"] = this.createdAt ? this.createdAt.toISOString() : <any>null;
         data["uploadedBy"] = this.uploadedBy ? this.uploadedBy.toJSON() : <any>null;
         data["uploadedAt"] = this.uploadedAt ? this.uploadedAt.toISOString() : <any>null;
@@ -760,9 +768,9 @@ export class CaffDetailsDto implements ICaffDetailsDto {
 
 export interface ICaffDetailsDto {
     id?: number;
-    createrName?: string;
-    animationDuration?: number;
+    creatorName?: string;
     fileName?: string;
+    fileUri?: string;
     createdAt?: Date;
     uploadedBy?: IUserDto;
     uploadedAt?: Date;
@@ -771,6 +779,7 @@ export interface ICaffDetailsDto {
 }
 
 export class UserDto implements IUserDto {
+    id?: string;
     fullName?: string;
     email?: string;
 
@@ -785,6 +794,7 @@ export class UserDto implements IUserDto {
 
     init(_data?: any) {
         if (_data) {
+            this.id = _data["id"] !== undefined ? _data["id"] : <any>null;
             this.fullName = _data["fullName"] !== undefined ? _data["fullName"] : <any>null;
             this.email = _data["email"] !== undefined ? _data["email"] : <any>null;
         }
@@ -799,6 +809,7 @@ export class UserDto implements IUserDto {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
+        data["id"] = this.id !== undefined ? this.id : <any>null;
         data["fullName"] = this.fullName !== undefined ? this.fullName : <any>null;
         data["email"] = this.email !== undefined ? this.email : <any>null;
         return data;
@@ -806,6 +817,7 @@ export class UserDto implements IUserDto {
 }
 
 export interface IUserDto {
+    id?: string;
     fullName?: string;
     email?: string;
 }
@@ -814,7 +826,8 @@ export class CiffDto implements ICiffDto {
     caption?: string;
     width?: number;
     height?: number;
-    tags?: string;
+    duration?: number;
+    tags?: string[];
 
     constructor(data?: ICiffDto) {
         if (data) {
@@ -830,7 +843,15 @@ export class CiffDto implements ICiffDto {
             this.caption = _data["caption"] !== undefined ? _data["caption"] : <any>null;
             this.width = _data["width"] !== undefined ? _data["width"] : <any>null;
             this.height = _data["height"] !== undefined ? _data["height"] : <any>null;
-            this.tags = _data["tags"] !== undefined ? _data["tags"] : <any>null;
+            this.duration = _data["duration"] !== undefined ? _data["duration"] : <any>null;
+            if (Array.isArray(_data["tags"])) {
+                this.tags = [] as any;
+                for (let item of _data["tags"])
+                    this.tags!.push(item);
+            }
+            else {
+                this.tags = <any>null;
+            }
         }
     }
 
@@ -846,7 +867,12 @@ export class CiffDto implements ICiffDto {
         data["caption"] = this.caption !== undefined ? this.caption : <any>null;
         data["width"] = this.width !== undefined ? this.width : <any>null;
         data["height"] = this.height !== undefined ? this.height : <any>null;
-        data["tags"] = this.tags !== undefined ? this.tags : <any>null;
+        data["duration"] = this.duration !== undefined ? this.duration : <any>null;
+        if (Array.isArray(this.tags)) {
+            data["tags"] = [];
+            for (let item of this.tags)
+                data["tags"].push(item);
+        }
         return data;
     }
 }
@@ -855,7 +881,8 @@ export interface ICiffDto {
     caption?: string;
     width?: number;
     height?: number;
-    tags?: string;
+    duration?: number;
+    tags?: string[];
 }
 
 export class CommentDto implements ICommentDto {

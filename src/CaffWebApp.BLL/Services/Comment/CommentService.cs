@@ -56,6 +56,7 @@ public class CommentService : ICommentService
         }
 
         comment.Text = commentDto.CommentText;
+        await _dbContext.SaveChangesAsync();
 
         return new CommentDto(comment);
     }
