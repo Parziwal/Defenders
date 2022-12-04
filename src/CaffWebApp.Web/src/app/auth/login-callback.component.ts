@@ -10,8 +10,8 @@ export class LoginCallbackComponent implements OnInit {
 
   constructor(private router:Router, private authService: AuthService) { }
 
-  ngOnInit() {
-    this.authService.completeAuthentication();
+  async ngOnInit() {
+    await this.authService.completeAuthentication();
     this.router.navigate(['/list']);
   }
 

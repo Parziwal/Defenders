@@ -35,6 +35,7 @@ public class UserService : IUserService
 
     public async Task<List<UserDto>> ListAllUsers() =>
         (await _userManager.GetUsersInRoleAsync(UserRoles.Default))
+                .Where(user => !user.IsDeleted)
                 .Select(user => new UserDto(user))
                 .ToList();
 }

@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
 import { CaffClient, CaffDto } from '../../api/api.generated';
 
 @Component({
@@ -9,7 +10,7 @@ import { CaffClient, CaffDto } from '../../api/api.generated';
 })
 export class ListPageComponent implements OnInit {
   list: CaffDto[] = [];
-  constructor(private readonly service: CaffClient, private router: Router) {
+  constructor(private readonly service: CaffClient, private router: Router, private toastr: ToastrService) {
     service.listCaffImages().subscribe((result) => (this.list = result));
   }
 
@@ -27,8 +28,18 @@ export class ListPageComponent implements OnInit {
   onFileSelected(event:any) {
     const file: File = event.target.files[0];
     if (file) {
-      this.service.uploadCaffFile({data: file,fileName: 'file.caff'}).subscribe();
+      this.service.uploadCaffFile({data: file,fileName: file.name}).subscribe(
+        () => { this.showSuccess("Sikeres feltöltés!"); this.searchCaffImages(); },
+        () => this.showError("Sikertelen feltöltés!")
+      );
     }
-    this.searchCaffImages();
+  }
+
+  showSuccess(text: string) {
+    this.toastr.success(text, 'Sikeres művelet!');
+  }
+
+  showError(text: string) {
+    this.toastr.error(text, 'Művelet sikertelen!');
   }
 }

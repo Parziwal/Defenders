@@ -7,6 +7,7 @@ import {AdminPageComponent} from "./pages/admin-page/admin-page.component";
 import {DetailsPageComponent} from "./pages/details-page/details-page.component";
 import {ListPageComponent} from "./pages/list-page/list-page.component";
 import {AuthGuardService} from "./auth/auth-guard.service";
+import { AdminGuardService } from './auth/admin-guard.service';
 
 
 const routes: Routes = [

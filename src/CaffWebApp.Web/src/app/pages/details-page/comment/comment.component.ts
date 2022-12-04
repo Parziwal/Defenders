@@ -10,7 +10,7 @@ export class CommentComponent implements OnInit {
   @Input() public comment?: CommentDto;
   @Input() public isAdmin: boolean = false;
   @Output() commentDeleted = new EventEmitter<number>();
-  @Output() commentUpdated = new EventEmitter<number>();
+  @Output() commentUpdated = new EventEmitter<{id: number, text: string}>();
   editing = false
   public commentText?: string;
   constructor() { }
@@ -24,7 +24,7 @@ export class CommentComponent implements OnInit {
 
   public updateComment(commentId: number) {
     this.editing = false
-    this.commentUpdated.emit(commentId);
+    this.commentUpdated.emit({id: commentId, text: this.commentText!});
   }
 
 

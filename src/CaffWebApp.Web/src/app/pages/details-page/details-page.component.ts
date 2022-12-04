@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {AddOrEditCommentDto, CaffClient, CaffDetailsDto, CommentClient} from "../../api/api.generated";
-import {ActivatedRoute} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 import {AuthService} from "../../auth/auth.service";
 import {ToastrService} from "ngx-toastr";
 
@@ -19,7 +19,9 @@ export class DetailsPageComponent implements OnInit {
               private _route: ActivatedRoute,
               private readonly _commentService: CommentClient,
               private toastr: ToastrService,
-              public authService: AuthService) {
+              public authService: AuthService,
+              private _router: Router,
+              ) {
     this._caffId =  +this._route.snapshot.params['id'];
   }
 
@@ -36,10 +38,9 @@ export class DetailsPageComponent implements OnInit {
 
   public addNewComment() {
    this._commentService.addCommentToCaff(this._caffId, new AddOrEditCommentDto({commentText: this.commentText})).subscribe(
-     () => this.showSuccess("Komment hozzáadva!"),
+     () => { this.showSuccess("Komment hozzáadva!"); this.getCaffDetails(); },
      () => this.showError("Komment hozzáadása sikertelen")
    );
-   this.getCaffDetails();
   }
 
   public deleteComment(commentId: number) {
@@ -52,9 +53,18 @@ export class DetailsPageComponent implements OnInit {
     );
   }
 
-  public updateComment(commentId: number) {
-    this._commentService.editComment(commentId,new AddOrEditCommentDto({commentText: this.commentText})).subscribe(
-      () => this.showSuccess("Komment szerkesztése!"),
+  public updateComment(commentId: number, text: string) {
+    this._commentService.editComment(commentId,new AddOrEditCommentDto({commentText: text})).subscribe(
+      () => {
+        this.caff!.comments = this.caff?.comments?.map(x => {
+          if (x.id === commentId) {
+            x.text = text;
+            return x;
+          }
+          return x;
+        }); 
+        this.showSuccess("Komment szerkesztése sikeres!");
+      },
       () => this.showError("Komment szerkesztése sikertelen")
     );
   }
@@ -72,6 +82,15 @@ export class DetailsPageComponent implements OnInit {
       this.showSuccess("Letöltés sikeres!");
     }, () => {
       this.showError("Letöltés sikertelen")
+    })
+  }
+
+  public deleteCaff() {
+    this._caffService.deleteCaff(this._caffId).subscribe((response) => {
+      this.showSuccess("Törlés sikeres!");
+      this._router.navigate(['list']);
+    }, () => {
+      this.showError("Törlés sikertelen")
     })
   }
 

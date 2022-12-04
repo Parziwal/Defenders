@@ -28,13 +28,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="logs\backend\" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Update="images\parsed\3d214036-3c1e-40b8-8c9f-661a931ab49d.gif">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <None Update="native\CaffWebApp.Parser.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

@@ -6,17 +6,13 @@ import { environment } from 'src/environments/environment';
 @Injectable({
   providedIn: 'root'
 })
-export class AuthService implements OnInit {
+export class AuthService {
 
   private manager: UserManager;
-  private user?: User | null;
+  private user: User | null = null;
 
   constructor() {
     this.manager = new UserManager(environment.authSettings)
-  }
-
-  async ngOnInit() {
-    this.user = await this.manager.getUser();
   }
 
   public async refreshUser(): Promise<void> {
@@ -45,21 +41,12 @@ export class AuthService implements OnInit {
     return '';
   }
 
-  async currentUser(): Promise<User | null> {
-    this.user = await this.manager.getUser();
+  currentUser(): User | null {
     return this.user;
   }
 
   public async login(): Promise<void> {
-    var someState = {
-      message: window.location.href,
-      signUpFlag: true
-    };
-    this.manager.signinRedirect(
-      {
-        state: someState,
-      }
-    );
+    this.manager.signinRedirect();
   }
 
   public logout(): Promise<void> {
